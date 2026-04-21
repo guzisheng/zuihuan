@@ -43,6 +43,14 @@
             z-index: 10;
         }
         
+        /* flex布局的屏幕激活时保持flex */
+        #title-screen.screen.active,
+        #account-screen.screen.active,
+        #save-select-screen.screen.active,
+        #name-input-screen.screen.active {
+            display: flex;
+        }
+        
         /* 终端屏幕使用flex布局 */
         #terminal-screen.screen.active {
             display: flex;
@@ -1487,6 +1495,78 @@
             font-weight: bold;
         }
 
+        /* 牌库/buff查看弹窗 */
+        .unit-info-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.72);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease;
+        }
+        .unit-info-modal {
+            background: linear-gradient(135deg, rgba(22,38,62,0.97), rgba(14,24,42,0.99));
+            border: 1px solid rgba(74,154,186,0.3);
+            border-radius: 16px;
+            padding: 20px;
+            width: 340px;
+            max-width: 92%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.55);
+            animation: slideUp 0.3s ease;
+        }
+        .unit-info-title {
+            font-size: 15px; font-weight: bold; color: #e0f0ff;
+            margin-bottom: 14px; padding-bottom: 10px;
+            border-bottom: 1px solid rgba(74,154,186,0.2);
+            display: flex; align-items: center; gap: 8px;
+        }
+        /* 牌库视图 */
+        .deck-card-list { display: flex; flex-direction: column; gap: 8px; }
+        .deck-card-item {
+            background: rgba(20,38,60,0.7);
+            border: 1px solid rgba(74,154,186,0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .deck-card-item.type-attack { border-left: 3px solid rgba(231,76,60,0.7); }
+        .deck-card-item.type-support { border-left: 3px solid rgba(46,204,113,0.7); }
+        .deck-card-item.type-special { border-left: 3px solid rgba(180,120,220,0.7); }
+        .deck-card-name { font-size: 13px; color: #c0d8f0; font-weight: 600; }
+        .deck-card-meta { font-size: 11px; color: #6a8aaa; }
+        .deck-card-tag {
+            font-size: 10px; padding: 2px 7px; border-radius: 10px;
+            flex-shrink: 0; margin-left: 8px;
+        }
+        .deck-card-tag.hand { background: rgba(74,186,130,0.25); color: #4aba82; }
+        .deck-card-tag.deck { background: rgba(74,154,186,0.2); color: #7ab8d0; }
+        .deck-card-tag.special { background: rgba(180,120,220,0.2); color: #c088e0; }
+        /* buff/debuff 视图 */
+        .buff-detail-list { display: flex; flex-direction: column; gap: 8px; }
+        .buff-detail-item {
+            background: rgba(20,38,60,0.7);
+            border: 1px solid rgba(74,154,186,0.15);
+            border-radius: 8px;
+            padding: 9px 12px;
+            display: flex; align-items: flex-start; gap: 10px;
+        }
+        .buff-detail-item.positive { border-left: 3px solid rgba(74,186,130,0.7); }
+        .buff-detail-item.negative { border-left: 3px solid rgba(186,74,74,0.7); }
+        .buff-detail-icon { font-size: 18px; line-height: 1; flex-shrink: 0; margin-top: 1px; }
+        .buff-detail-body { flex: 1; }
+        .buff-detail-name { font-size: 13px; color: #d0e8f0; font-weight: 600; margin-bottom: 2px; }
+        .buff-detail-turns { font-size: 11px; color: #7a9aaa; }
+        .buff-detail-value { font-size: 11px; color: #a0b8c8; margin-top: 2px; }
+        .unit-info-empty { font-size: 13px; color: #5a7a8a; text-align: center; padding: 20px 0; }
+        .unit-info-close {
+            margin-top: 16px; width: 100%;
+            background: rgba(74,154,186,0.15); border: 1px solid rgba(74,154,186,0.3);
+            color: #a0c8e0; border-radius: 8px; padding: 8px; font-size: 13px;
+            cursor: pointer; transition: background 0.2s;
+        }
+        .unit-info-close:hover { background: rgba(74,154,186,0.28); }
+
         /* 技能详情弹窗 */
         .skill-detail-overlay {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -1721,9 +1801,35 @@
         #character-screen .screen-header {
             display: flex;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             padding-bottom: 15px;
             border-bottom: 1px solid rgba(74, 154, 186, 0.3);
+        }
+        .char-resource-bar {
+            display: flex;
+            gap: 16px;
+            padding: 10px 16px;
+            margin-bottom: 12px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 8px;
+            font-size: 13px;
+        }
+        .char-resource-bar .res-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #c0d8e8;
+        }
+        .char-resource-bar .res-icon {
+            font-size: 16px;
+        }
+        .char-resource-bar .res-label {
+            color: #7a9aaa;
+            font-size: 12px;
+        }
+        .char-resource-bar .res-value {
+            color: #ffd080;
+            font-weight: bold;
         }
         
         #character-screen .back-btn {
@@ -4787,6 +4893,7 @@
                 <button class="back-btn" id="btn-char-back">← 返回</button>
                 <div class="screen-title">角色</div>
             </div>
+            <div id="char-resource-bar" class="char-resource-bar"></div>
             <div class="character-container">
                 <div class="character-list" id="character-list">
                     <!-- 角色列表由JS生成 -->
@@ -4829,6 +4936,7 @@
             <div class="event-tab-bar">
                 <button class="event-tab active" id="event-tab-newbie" onclick="switchEventTab('newbie')">新手好礼</button>
                 <button class="event-tab" id="event-tab-signin" onclick="switchEventTab('signin')">七日签到</button>
+                <button class="event-tab" id="event-tab-test" onclick="switchEventTab('test')">🔧 测试专用</button>
             </div>
 
             <!-- 新手好礼面板 -->
@@ -4854,6 +4962,18 @@
                 </div>
                 <div class="signin-grid" id="signin-grid"><!-- JS填充 --></div>
                 <div class="signin-tip">· 每天0点刷新 &nbsp;·&nbsp; 首次登录起算7天</div>
+            </div>
+
+            <!-- 测试专用面板 -->
+            <div id="event-panel-test" class="event-panel" style="display:none;">
+                <div class="event-banner" style="border-color:#ff6b6b;">
+                    <div class="event-banner-icon">🔧</div>
+                    <div class="event-banner-info">
+                        <div class="event-banner-title">测试专用</div>
+                        <div class="event-banner-desc">开发者调试用，可重复领取</div>
+                    </div>
+                </div>
+                <div id="test-reward-list" style="max-height:calc(100vh - 220px);overflow-y:auto;padding-right:4px;"></div>
             </div>
         </div>
 
@@ -5011,6 +5131,7 @@
                 </div>
                 <div class="pool-float-options" id="pool-float-options">
                     <button class="pool-tab active" data-pool="limited-char"><span class="tab-icon">🔥</span>限定角色</button>
+                    <button class="pool-tab" data-pool="limited-char-bamboo"><span class="tab-icon">🎋</span>竹间客</button>
                     <button class="pool-tab" data-pool="limited-shadow"><span class="tab-icon">✦</span>限定罪影</button>
                     <button class="pool-tab" data-pool="standard"><span class="tab-icon">⚔</span>常驻池</button>
                     <button class="pool-tab beginner" data-pool="beginner"><span class="tab-icon">🌟</span>新手池</button>
@@ -5573,6 +5694,19 @@
                 guarantee: true,   // 50/50机制
                 description: '本期UP：Zwei — 拟物派的死亡枪手'
             },
+            'limited-char-bamboo': {
+                id: 'limited-char-bamboo',
+                name: '竹间客',
+                type: 'character',
+                upId: 'char_006',  // 当前UP角色：不秋草
+                singleCost: 160,
+                multiCost: 1440,
+                multiDiscount: 1,
+                rates: { ssr: 0.014, sr: 0.12 },
+                pity: { ssrHard: 60, ssrSoft: 40, srHard: 10 },
+                guarantee: true,
+                description: '本期UP：不秋草 — 竹间的隐士'
+            },
             [GACHA_POOL_TYPES.LIMITED_SHADOW]: {
                 id: 'limited-shadow',
                 name: '限定罪影',
@@ -5618,7 +5752,7 @@
         
         // 角色池可抽取的角色列表（按稀有度分组）
         const GACHA_CHAR_POOL = {
-            ssr: ['char_001', 'char_002', 'char_003', 'char_004'],  // SSR: 霜华、烬羽、黯月、圣歌
+            ssr: ['char_001', 'char_002', 'char_003', 'char_004', 'char_006'],  // SSR: 霜华、烬羽、黯月、圣歌、不秋草
             sr: ['char_101', 'char_102', 'char_103', 'char_104']   // SR: 铁壁、疾风、调和者、裁决
         };
         
@@ -5651,12 +5785,18 @@
         
         // 初始化各池保底状态
         function initGachaPity() {
+            // 初始化所有定义的池子
             Object.values(GACHA_POOL_TYPES).forEach(poolType => {
                 if (!gachaState.poolPity[poolType]) {
                     gachaState.poolPity[poolType] = { ssr: 0, sr: 0 };
                     gachaState.poolGuaranteeLost[poolType] = false;
                 }
             });
+            // 初始化竹间客池
+            if (!gachaState.poolPity['limited-char-bamboo']) {
+                gachaState.poolPity['limited-char-bamboo'] = { ssr: 0, sr: 0 };
+                gachaState.poolGuaranteeLost['limited-char-bamboo'] = false;
+            }
         }
 
         // ==================== 核心抽卡逻辑 ====================
@@ -5958,6 +6098,7 @@
             // 判断当前池对应的券字段
             var isLimitedPool = (poolType === GACHA_POOL_TYPES.LIMITED_CHAR ||
                                  poolType === GACHA_POOL_TYPES.LIMITED_SHADOW ||
+                                 poolType === 'limited-char-bamboo' ||
                                  poolType === GACHA_POOL_TYPES.BEGINNER);
             var ticketField = isLimitedPool ? 'limitedTickets' : 'permanentTickets';
             var ticketsOwned = gameState.saveData[ticketField] || 0;
@@ -6116,7 +6257,11 @@
             const upTag = document.getElementById('up-name-tag');
             const artImg = document.getElementById('recruit-art-img');
             
-            if (poolType === GACHA_POOL_TYPES.LIMITED_CHAR || poolType === GACHA_POOL_TYPES.STANDARD || poolType === GACHA_POOL_TYPES.BEGINNER) {
+            if (poolType === 'limited-char-bamboo') {
+                // 竹间客池 - 显示不秋草
+                upTag.textContent = '🎋 竹间客 · 不秋草';
+                artImg.src = 'character.png';
+            } else if (poolType === GACHA_POOL_TYPES.LIMITED_CHAR || poolType === GACHA_POOL_TYPES.STANDARD || poolType === GACHA_POOL_TYPES.BEGINNER) {
                 upTag.textContent = poolType === GACHA_POOL_TYPES.LIMITED_CHAR ? '🔥 限定招募 · 拟物 · Zwei' :
                                   poolType === GACHA_POOL_TYPES.STANDARD ? '⚔ 常驻角色池' : '🌟 新手推荐';
                 artImg.src = 'character.png';
@@ -6128,6 +6273,7 @@
             // 更新按钮可用性（有券时也视为可抽）
             var isLimited = (poolType === GACHA_POOL_TYPES.LIMITED_CHAR ||
                              poolType === GACHA_POOL_TYPES.LIMITED_SHADOW ||
+                             poolType === 'limited-char-bamboo' ||
                              poolType === GACHA_POOL_TYPES.BEGINNER);
             var tField = isLimited ? 'limitedTickets' : 'permanentTickets';
             var tOwned = gameState.saveData[tField] || 0;
@@ -6768,6 +6914,18 @@
                 { id: "asc_104_1", name: "碎甲", desc: "削韧效率提升20%", trigger: "always", effect: "fortitude_efficiency" },
                 { id: "asc_104_2", name: "审判", desc: "攻击破韧状态的敌人时，伤害提升25%", trigger: "attack_broken", effect: "broken_damage_boost" },
                 { id: "asc_104_3", name: "裁决", desc: "使敌人破韧后，自身下回合获得2点基础威力", trigger: "break_fortitude", effect: "break_power_up" }
+            ],
+            // 不秋草 - 迅刃·暴食，核心机制：打叶声、落竹层
+            "char_006": [
+                { id: "asc_006_1", name: "雨后春生", desc: "获得落竹时，回复2点理智。落竹大于7层时清空，立即使用三次不获得落竹的「打叶声」。理智大于25时，造成的暴击伤害提高40%，等于45时改为80%并共享给所有队友。", trigger: "luozhu_gain", effect: "luozhu_sanity_crit" },
+                { id: "asc_006_2", name: "穿林风", desc: "进入战斗时立即使用三次「打叶声」，使用「奥义·茕茕不秋草」后立即使用五次「打叶声」", trigger: "battle_start", effect: "initial_dayesheng" },
+                { id: "asc_006_3", name: "星名·天伤星", desc: "每次到达45理智时，获得一次理智减少免疫。速度到达125后，「打叶声」的倍率增加5%且使用技能【奥义·茕茕不秋草】时额外使其生效一次。", trigger: "sanity_reach_45", effect: "speed_crit_boost" }
+            ],
+            // 诺亚 - ???·傲慢，核心机制：怒火、以怒焚融冰原
+            "char_007": [
+                { id: "asc_007_1", name: "嘲讽", desc: "诺亚受到敌方攻击的概率提高50%", trigger: "always", effect: "noah_taunt" },
+                { id: "asc_007_2", name: "怒火焚天", desc: "受到攻击或通过我方技能流失血量时将记录失去的血量百分比，释放「以怒焚融冰原」时提高相同百分比的最终伤害，最高100%，释放后清空", trigger: "damage_taken", effect: "anger_damage_boost" },
+                { id: "asc_007_3", name: "怒火护盾", desc: "释放「以怒焚融冰原」时使所有角色获得诺亚生命值10%的护盾", trigger: "ult_release", effect: "team_shield" }
             ]
         };
         
@@ -6885,6 +7043,7 @@
                         basePower: 5,
                         coinPower: 2,
                         coinCount: 3,
+                        targetType: "all",
                         description: "对所有敌人造成攻击力50%的伤害，施加3层灼烧（每回合造成攻击力15%伤害，持续2回合），并使其防御力下降30%，持续2回合"
                     }
                 ],
@@ -7147,7 +7306,7 @@
                 description: "以怠惰之心维持战场平衡的调和者。",
                 talent: {
                     name: "怠惰均衡",
-                    description: "自身回合开始时若理智值在-10至10之间则自身获得3%免伤（持续1回合）；施加减速效果时，效果持续时间延长1回合"
+                    description: "回合开始时若理智值在-10至10之间则自身获得3%免伤（持续1回合）；速度低于目标时受到伤害降低15%；施加减速效果时，效果持续时间延长1回合"
                 },
                 skills: [
                     {
@@ -7310,6 +7469,125 @@
                     4: { type: "skillEnhance", skillIndex: 2, desc: "死亡：增伤效果提升至100%，硬币正面时额外使本次【将死亡押入枪膛】的倍率提升至120%" },
                     6: { type: "special", desc: "充能每溢出2层将1张【将死亡押入枪膛】置入牌库（充能6层上限）。拟物派·死亡使用后若投出正面则返还6充能并将3张【将死亡押入枪膛】置入牌库" }
                 }
+            },
+            // 不秋草 - SSR 迅刃·暴食（拟竹派）
+            "char_006": {
+                id: "char_006",
+                name: "不秋草",
+                rarity: "SSR",
+                profession: "迅刃",
+                sinType: "暴食",
+                baseHp: 95,
+                baseAtk: 32,
+                baseDef: 15,
+                baseSpeed: 12,
+                fortitude: 60,
+                description: "竹间的隐士，以七重妖刀斩落秋叶。",
+                talent: {
+                    name: "宝具·七重竹",
+                    description: "我方角色使用攻击技能后，立即发动两次额外的「打叶声」（对目前血量最低的敌人造成攻击力20%的暴食伤害，使自身的速度提高1点并获得一层「落竹」）"
+                },
+                skills: [
+                    {
+                        name: "折竹一枚",
+                        type: "attack",
+                        sinType: "暴食",
+                        iconType: "sword",
+                        copies: 3,
+                        basePower: 5,
+                        coinPower: 4,
+                        coinCount: 2,
+                        description: "对选择的敌人造成攻击力80%的暴食伤害并附加15%减防，硬币每个正面额外使不秋草使用一次「打叶声」"
+                    },
+                    {
+                        name: "酒过三巡",
+                        type: "support",
+                        sinType: "暴食",
+                        iconType: "up",
+                        copies: 3,
+                        basePower: 0,
+                        coinPower: 1,
+                        coinCount: 1,
+                        description: "同名卡一场战斗最多使用三次，使用三次后消失。理智减少10点，立即使用三次「打叶声」，正面时将一张「折竹一枚」替换为「奥义·茕茕不秋草」"
+                    },
+                    {
+                        name: "奥义·茕茕不秋草",
+                        type: "support",
+                        sinType: "暴食",
+                        iconType: "sword",
+                        copies: 1,
+                        basePower: 0,
+                        coinPower: 1,
+                        coinCount: 1,
+                        description: "使用五次「打叶声」，正面时改为7次"
+                    }
+                ],
+                // 升华效果：1/2/4/6阶
+                ascensionEffects: {
+                    1: { type: "talentEnhance", desc: "七重竹强化：攻击后发动的「打叶声」次数+1（2次→3次）" },
+                    2: { type: "skillEnhance", skillIndex: 0, desc: "折竹一枚：「打叶声」命中时使目标获得1层「破甲」（防御力-1%，可叠加，最高50%）；每个正面额外削韧+1" },
+                    4: { type: "skillEnhance", skillIndex: 1, desc: "酒过三巡：使用后为所有队友恢复5%最大生命值，并使所有队友攻击力永久+10%（不可驱散，可叠加）" },
+                    6: { type: "special", desc: "战斗开始时获得3层「落竹」；理智等于45时，「打叶声」伤害无视目标15%防御力；每场战斗首次将理智降至0以下时，保留1点理智" }
+                }
+            },
+            "char_007": {
+                id: "char_007",
+                name: "诺亚",
+                rarity: "SSR",
+                profession: "坚盾",
+                sinType: "愤怒",
+                baseHp: 130,
+                baseAtk: 28,
+                baseDef: 20,
+                baseSpeed: 8,
+                fortitude: 90,
+                description: "背负「世界」之键的勇者，以怒火焚尽一切阻碍。",
+                talent: {
+                    name: "「世界」之键·圣愚改",
+                    description: "诺亚受到的伤害减少50%；受到敌人的攻击时获得1层「怒火」；当怒火到达5层时对血量最多的敌人释放一次「以怒焚融冰原」（优先对精英敌人释放）"
+                },
+                skills: [
+                    {
+                        name: "烈火焚心",
+                        type: "support",
+                        sinType: "愤怒",
+                        iconType: "up",
+                        copies: 3,
+                        basePower: 0,
+                        coinPower: 1,
+                        coinCount: 1,
+                        description: "流失30%当前生命值，使所有队友获得诺亚10%最大生命值的护盾；硬币正面时额外获得1层「怒火」"
+                    },
+                    {
+                        name: "燎原火引",
+                        type: "support",
+                        sinType: "愤怒",
+                        iconType: "up",
+                        copies: 2,
+                        basePower: 0,
+                        coinPower: 1,
+                        coinCount: 1,
+                        description: "嘲讽所有敌人持续2回合；硬币正面时使所有敌人获得3层「灼烧」"
+                    },
+                    {
+                        name: "以怒焚融冰原",
+                        type: "attack",
+                        sinType: "愤怒",
+                        iconType: "sword",
+                        copies: 1,
+                        basePower: 10,
+                        coinPower: 4,
+                        coinCount: 2,
+                        description: "对选择的敌人造成诺亚最大生命值30%的愤怒伤害；每投出一个正面额外以一个敌人作为同时攻击对象"
+                    }
+                ],
+                // 升华效果：1/2/4/6阶
+                ascensionEffects: {
+                    1: { type: "special", desc: "怒火之种：战斗开始时获得3层「怒火」" },
+                    2: { type: "special", desc: "怒火连携：受到带有「灼烧」状态的敌人攻击时，额外获得1层「怒火」" },
+                    4: { type: "special", desc: "怒火永燃：释放「以怒焚融冰原」后，保留1层「怒火」" },
+                    6: { type: "special", desc: "怒火·极：「以怒焚融冰原」释放后，为诺亚恢复10%最大生命值" }
+                }
             }
         };
         
@@ -7396,6 +7674,8 @@
                             shadowEffect = shadowTemplate.effect;
                             if (shadowEffect.bonusSpeed) finalStats.speed += shadowEffect.bonusSpeed;
                             if (shadowEffect.fortitudeBonus) finalStats.fortitude += shadowEffect.fortitudeBonus;
+                            // 坚盾SR罪影：防御力+20%（面板上显示）
+                            if (shadowEffect.defBonusPercent) finalStats.def = Math.floor(finalStats.def * (1 + shadowEffect.defBonusPercent));
                         }
                     }
                 }
@@ -7509,10 +7789,17 @@
             }
             
             // 创建新账号，赠送初始角色
+            // 诺亚作为主角，直接创建并设置全升华6阶
+            var noahInstance = createCharacterInstance('char_007', 1);
+            noahInstance.ascensionLevel = 6;  // 主角全升华
+            noahInstance.angerStacks = 0;
+            noahInstance._hpLossPercent = 0;
+            
             const starterChars = [
-                createCharacterInstance('char_101', 1), // 铁壁 SR
-                createCharacterInstance('char_102', 1), // 疾风 SR
-                createCharacterInstance('char_103', 1)  // 调和者 SR
+                noahInstance,                              // 诺亚（主角）全升华
+                createCharacterInstance('char_101', 1),   // 铁壁 SR
+                createCharacterInstance('char_102', 1),   // 疾风 SR
+                createCharacterInstance('char_103', 1)    // 调和者 SR
             ];
             
             // 赠送初始罪之影（每个职业一个R级）
@@ -7716,6 +8003,30 @@
                             ];
                             needSave = true;
                         }
+                        // 旧存档兼容：角色等级超出旧上限时，自动补足升格次数
+                        var chars = gameState.saveData.characters;
+                        for (var ci = 0; ci < chars.length; ci++) {
+                            var c = chars[ci];
+                            var asc = c.ascension || 0;
+                            var cap = 20 + asc * 20;
+                            // 如果当前等级超出当前升格对应的上限，自动提升升格等级
+                            while (c.level > cap && asc < 3) {
+                                asc++;
+                                cap = 20 + asc * 20;
+                            }
+                            if (asc !== (c.ascension || 0)) {
+                                c.ascension = asc;
+                                // 解锁对应升格模块
+                                var mods = CHARACTER_ASCENSION_MODULES[c.charId];
+                                if (mods) {
+                                    c.ascensionModules = [];
+                                    for (var mi = 0; mi < asc; mi++) {
+                                        if (mods[mi]) c.ascensionModules.push(mods[mi].id);
+                                    }
+                                }
+                                needSave = true;
+                            }
+                        }
                         if (needSave) {
                             accounts[savedUser] = gameState.saveData;
                             localStorage.setItem('sinRingAccounts', JSON.stringify(accounts));
@@ -7738,12 +8049,12 @@
             // 显示目标屏幕
             var target = document.getElementById(screenId);
             if (target) {
-                // 根据屏幕类型设置正确的display值
+                // 根据屏幕类型设置正确的display值，flex屏幕使用!important确保不被CSS覆盖
                 if (screenId === 'title-screen' || screenId === 'account-screen' || 
                     screenId === 'save-select-screen' || screenId === 'name-input-screen') {
-                    target.style.display = 'flex';
+                    target.style.cssText = 'display: flex !important;';
                 } else {
-                    target.style.display = 'block';
+                    target.style.cssText = 'display: block !important;';
                 }
                 target.classList.add('active');
             }
@@ -7769,8 +8080,36 @@
             };
         }
         
-        // 计算升级所需经验
+        // 强制将角色升格到指定等级（用于修复旧存档的角色等级超出旧上限问题）
+        function forceSetAscension(charInstance, targetAscension) {
+            charInstance.ascension = targetAscension;
+            // 解锁对应升格模块
+            var modules = CHARACTER_ASCENSION_MODULES[charInstance.charId];
+            if (modules) {
+                charInstance.ascensionModules = [];
+                for (var i = 0; i < targetAscension; i++) {
+                    if (modules[i]) charInstance.ascensionModules.push(modules[i].id);
+                }
+            }
+        }
+        
+        // 计算升级所需经验（角色用，动态上限）
+        function getCharExpForLevel(level, ascension) {
+            var cap = 20 + (ascension || 0) * 20;
+            if (level >= cap) return 0;
+            return Math.floor(200 + (level - 1) * 60);
+        }
+        
+        // 计算升级所需经验（罪影用，动态上限）
+        function getShadowExpForLevel(level, ascension) {
+            var cap = 20 + (ascension || 0) * 20;
+            if (level >= cap) return 0;
+            return Math.floor(150 + (level - 1) * 50);
+        }
+        
+        // 计算升级所需经验（旧兼容，角色用，等级上限50）
         function getExpForLevel(level) {
+            if (level >= 50) return 0;
             return Math.floor(100 * Math.pow(1.5, level - 1));
         }
         
@@ -9152,6 +9491,9 @@
         // SSR角色列表
         var SSR_CHARACTERS = ['char_001', 'char_002', 'char_003', 'char_004', 'char_005', 'char_006', 'char_007', 'char_008'];
 
+        // SSR罪之影列表（用于测试自选）
+        var SSR_SHADOWS = ['shadow_swift_001', 'shadow_spirit_001', 'shadow_shield_001', 'shadow_harmony_001', 'shadow_heal_001', 'shadow_abnormal_001', 'shadow_balance_001'];
+
         // 确保存档有活动字段
         function ensureEventData() {
             var sd = gameState.saveData;
@@ -9194,6 +9536,7 @@
             showScreen('event-screen');
             renderEventNewbie();
             renderEventSignin();
+            renderEventTest();
             updateEventBadge();
         }
 
@@ -9308,6 +9651,171 @@
             updateEventBadge();
             updateTopBar();
             showToast('已领取 ' + r.icon + ' ' + r.name + ' ×' + r.amount);
+        }
+
+        // 渲染测试专用面板
+        function renderEventTest() {
+            var el = document.getElementById('test-reward-list');
+            if (!el) return;
+            el.innerHTML = '';
+
+            var rewards = [
+                { id: 'test_ticket_limited', icon: '🎟️', name: '限定抽卡券', amount: 50, desc: '限定角色池专用' },
+                { id: 'test_char_voucher', icon: '🟧', name: '角色升级凭证', amount: 50000, desc: '用于角色升级' },
+                { id: 'test_shadow_voucher', icon: '🟣', name: '罪影升级凭证', amount: 500, desc: '用于罪之影升级' },
+                { id: 'test_arcanum_tickets', icon: '🎫', name: '阿卡纳金券', amount: 100000, desc: '可在金券商店兑换物品' },
+                { id: 'test_ssr_char', icon: '⭐', name: 'SSR角色自选', amount: 1, desc: '从所有SSR角色中选择一位', selectable: true, type: 'char' },
+                { id: 'test_ssr_shadow', icon: '🌑', name: 'SSR罪影自选', amount: 1, desc: '从所有SSR罪影中选择一个', selectable: true, type: 'shadow' },
+                { id: 'test_ascension_key', icon: '🔑', name: '诺亚升华之钥', amount: 6, desc: '用于诺亚的升华突破' }
+            ];
+
+            rewards.forEach(function(r) {
+                var row = document.createElement('div');
+                row.className = 'event-reward-row';
+                row.innerHTML = '<div class="event-reward-icon">' + r.icon + '</div>' +
+                    '<div class="event-reward-info"><div class="event-reward-name">' + r.name + '</div><div style="font-size:11px;color:#888;">' + r.desc + '</div></div>';
+                if (r.selectable) {
+                    var btn = document.createElement('button');
+                    btn.className = 'signin-claim-btn';
+                    btn.style.cssText = 'background:linear-gradient(135deg,#ff6b6b,#c92a2a);padding:6px 12px;font-size:12px;';
+                    btn.textContent = '选择';
+                    btn.onclick = (function(type){ return function(){ showTestSelectModal(type); }; })(r.type);
+                    row.appendChild(btn);
+                } else {
+                    var btn = document.createElement('button');
+                    btn.className = 'signin-claim-btn';
+                    btn.style.cssText = 'background:linear-gradient(135deg,#51cf66,#2f9e44);padding:6px 12px;font-size:12px;';
+                    btn.textContent = '领取 ×' + r.amount;
+                    btn.onclick = (function(reward){ return function(){ claimTestReward(reward); }; })(r);
+                    row.appendChild(btn);
+                }
+                el.appendChild(row);
+            });
+        }
+
+        // 测试奖励领取函数
+        function claimTestReward(reward) {
+            if (reward.id === 'test_ticket_limited') {
+                gameState.saveData.limitedTickets = (gameState.saveData.limitedTickets || 0) + reward.amount;
+                showToast('获得限定抽卡券 ×' + reward.amount);
+            } else if (reward.id === 'test_char_voucher') {
+                addItem('mat_char_voucher', reward.amount);
+                showToast('获得角色升级凭证 ×' + reward.amount);
+            } else if (reward.id === 'test_shadow_voucher') {
+                addItem('mat_shadow_voucher', reward.amount);
+                showToast('获得罪影升级凭证 ×' + reward.amount);
+            } else if (reward.id === 'test_arcanum_tickets') {
+                gameState.saveData.arcanumTickets = (gameState.saveData.arcanumTickets || 0) + reward.amount;
+                showToast('获得阿卡纳金券 ×' + reward.amount);
+            } else if (reward.id === 'test_ascension_key') {
+                // 添加诺亚升华之钥
+                for (var i = 0; i < 6; i++) {
+                    var ascensionKeyItem = {
+                        id: 'ascension_key_char_007_' + i,
+                        name: '升华之钥·诺亚',
+                        icon: '🔑',
+                        desc: '用于诺亚的升华',
+                        type: 'ascension_key',
+                        category: 'material',
+                        targetCharId: 'char_007',
+                        rarity: 'SR'
+                    };
+                    addItemToWarehouse(ascensionKeyItem);
+                }
+                showToast('获得升华之钥·诺亚 ×6');
+            }
+            gameState.saveData.isDirty = true;
+            saveCurrentProgress();
+            updateTopBar();
+        }
+
+        // 显示测试自选弹窗
+        function showTestSelectModal(type) {
+            var overlay = document.createElement('div');
+            overlay.id = 'test-select-overlay';
+            overlay.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:10000;display:flex;align-items:center;justify-content:center;';
+
+            var title = type === 'char' ? 'SSR 角色自选' : 'SSR 罪影自选';
+            var list = type === 'char' ? SSR_CHARACTERS : SSR_SHADOWS;
+            var templates = type === 'char' ? CHARACTER_TEMPLATES : SHADOW_TEMPLATES;
+
+            var html = '<div style="background:#1a1a2e;border-radius:12px;padding:20px;max-width:500px;width:90%;max-height:80vh;overflow-y:auto;">' +
+                '<div style="font-size:20px;font-weight:bold;text-align:center;margin-bottom:16px;color:#ffd700;">✦ ' + title + ' ✦</div>' +
+                '<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;">';
+
+            list.forEach(function(id) {
+                var t = templates[id];
+                if (!t) return;
+                html += '<div class="test-select-item" data-id="' + id + '" data-type="' + type + '" ' +
+                    'style="background:#252540;border-radius:8px;padding:12px;cursor:pointer;text-align:center;transition:all 0.2s;" ' +
+                    'onmouseover="this.style.background=\'#353560\'" onmouseout="this.style.background=\'#252540\'">' +
+                    '<div style="font-size:28px;margin-bottom:6px;">' + (t.icon || '⭐') + '</div>' +
+                    '<div style="font-weight:bold;color:#fff;">' + t.name + '</div>' +
+                    '<div style="font-size:11px;color:#888;">' + t.rarity + ' · ' + t.profession + '</div>' +
+                    '</div>';
+            });
+
+            html += '</div><button onclick="closeTestSelectModal()" style="width:100%;margin-top:16px;padding:10px;background:#444;border:none;color:#fff;border-radius:6px;cursor:pointer;font-size:14px;">取消</button></div>';
+
+            overlay.innerHTML = html;
+            document.body.appendChild(overlay);
+
+            // 添加点击事件
+            overlay.querySelectorAll('.test-select-item').forEach(function(item) {
+                item.onclick = function() {
+                    var id = item.dataset.id;
+                    if (type === 'char') {
+                        // 检查是否已拥有该角色
+                        var owned = gameState.saveData.characters.filter(function(c){ return c.charId === id; });
+                        if (owned.length > 0) {
+                            // 已有该角色：给升华之钥，满6把转纯净玛纳
+                            var template = CHARACTER_TEMPLATES[id];
+                            var charName = template ? template.name : id;
+                            var existingKeys = gameState.saveData.warehouse.filter(function(it){
+                                return it.targetCharId === id && it.type === 'ascension_key';
+                            });
+                            if (existingKeys.length >= 6) {
+                                gameState.saveData.pureMana = (gameState.saveData.pureMana||0) + 20;
+                                showToast(charName + ' 已满6把升华之钥，转化为纯净玛纳×20');
+                            } else {
+                                var newKey = {
+                                    id: 'ascension_key_' + id + '_' + Date.now(),
+                                    name: '升华之钥·' + charName,
+                                    icon: '🔑',
+                                    desc: '用于' + charName + '的升华',
+                                    type: 'ascension_key',
+                                    category: 'material',
+                                    targetCharId: id,
+                                    rarity: 'SR'
+                                };
+                                addItemToWarehouse(newKey);
+                                showToast(charName + ' 已拥有，转化为升华之钥·' + charName);
+                            }
+                        } else {
+                            gameState.saveData.characters.push(createCharacterInstance(id, 1));
+                            showToast('获得角色：' + templates[id].name);
+                        }
+                    } else {
+                        // 罪影：已有则给纯净玛纳
+                        var ownedS = gameState.saveData.shadows.filter(function(s){ return s.shadowId === id; });
+                        if (ownedS.length > 0) {
+                            gameState.saveData.pureMana = (gameState.saveData.pureMana||0) + 15;
+                            showToast(templates[id].name + ' 已拥有，转化为纯净玛纳×15');
+                        } else {
+                            gameState.saveData.shadows.push(createShadowInstance(id, 1));
+                            showToast('获得罪影：' + templates[id].name);
+                        }
+                    }
+                    gameState.saveData.isDirty = true;
+                    saveCurrentProgress();
+                    closeTestSelectModal();
+                };
+            });
+        }
+
+        function closeTestSelectModal() {
+            var overlay = document.getElementById('test-select-overlay');
+            if (overlay) overlay.remove();
         }
 
         // 显示SSR自选弹窗
@@ -9440,6 +9948,7 @@
         function showCharacterScreen() {
             showScreen('character-screen');
             renderCharacterList();
+            renderCharResourceBar();
             // 默认显示第一个角色
             const firstChar = gameState.saveData.characters[0];
             if (firstChar) {
@@ -9479,6 +9988,19 @@
                 item.addEventListener('click', () => selectCharacter(char.charId));
                 listEl.appendChild(item);
             });
+            renderCharResourceBar();
+        }
+
+        // 渲染角色界面顶部的资源栏
+        function renderCharResourceBar() {
+            var el = document.getElementById('char-resource-bar');
+            if (!el) return;
+            var arcanum = gameState.saveData.arcanumTickets || 0;
+            var charVoucher = getItemQty('mat_char_voucher');
+            var shadowVoucher = getItemQty('mat_shadow_voucher');
+            el.innerHTML = '<div class="res-item"><span class="res-icon">🎫</span><span class="res-label">阿卡纳金券</span><span class="res-value">' + arcanum.toLocaleString() + '</span></div>' +
+                '<div class="res-item"><span class="res-icon">🟧</span><span class="res-label">角色升级凭证</span><span class="res-value">' + charVoucher.toLocaleString() + '</span></div>' +
+                '<div class="res-item"><span class="res-icon">🟣</span><span class="res-label">罪影升级凭证</span><span class="res-value">' + shadowVoucher.toLocaleString() + '</span></div>';
         }
         
         function selectCharacter(charId) {
@@ -9537,14 +10059,14 @@
             
             // 经验值相关
             const currentExp = charData.exp || 0;
-            const expNeeded = getExpForLevel(charData.level + 1);
+            const expNeeded = getCharExpForLevel(charData.level + 1, charData.ascension || 0);
             const expPercent = expNeeded > 0 ? Math.min(100, Math.floor(currentExp / expNeeded * 100)) : 0;
             
             // 罪之影经验
             let shadowExp = 0, shadowExpNeeded = 0, shadowExpPercent = 0, maxLevel = false;
             if (shadowInstance) {
                 shadowExp = shadowInstance.exp || 0;
-                shadowExpNeeded = getExpForLevel(shadowInstance.level + 1);
+                shadowExpNeeded = getShadowExpForLevel(shadowInstance.level + 1, shadowInstance.ascension || 0);
                 maxLevel = shadowExpNeeded === 0; // 到达最大等级
                 shadowExpPercent = maxLevel ? 100 : Math.min(100, Math.floor(shadowExp / shadowExpNeeded * 100));
             }
@@ -9622,8 +10144,8 @@
                                             </div>
                                         </div>
                                         <span class="upgrade-cost-row">
-                                            <span class="upgrade-cost-item"><span class="upgrade-currency-icon currency-char-voucher">凭</span>${getCharUpgradeCost(charData.level)}</span>
-                                            <span class="upgrade-cost-item"><span class="upgrade-currency-icon currency-arcanum">券</span>${Math.ceil(getCharUpgradeCost(charData.level) * 0.5)}</span>
+                                            <span class="upgrade-cost-item"><span class="upgrade-currency-icon currency-char-voucher">凭</span>${getCharUpgradeCost(charData.level, charData.ascension || 0)}</span>
+                                            <span class="upgrade-cost-item"><span class="upgrade-currency-icon currency-arcanum">券</span>${(typeof getCharUpgradeCost(charData.level, charData.ascension || 0) === 'number') ? Math.ceil(getCharUpgradeCost(charData.level, charData.ascension || 0) * 0.5) : '-'}</span>
                                         </span>
                                         <button class="btn-upgrade btn-upgrade-char" onclick="handleCharUpgrade('${charData.instanceId}')" ${canUpgradeChar(charData) ? '' : 'disabled'}>
                                             升级
@@ -9758,8 +10280,8 @@
                                             </div>
                                         </div>
                                         <span class="upgrade-cost-row" style="justify-content:center;">
-                                            <span class="upgrade-cost-item"><span class="upgrade-currency-icon currency-shadow-voucher">凭</span>${getShadowUpgradeCost(shadowInstance.level)}</span>
-                                            <span class="upgrade-cost-item"><span class="upgrade-currency-icon currency-arcanum">券</span>${Math.ceil(getShadowUpgradeCost(shadowInstance.level) * 0.5)}</span>
+                                            <span class="upgrade-cost-item"><span class="upgrade-currency-icon currency-shadow-voucher">凭</span>${getShadowUpgradeCost(shadowInstance.level, shadowInstance.ascension || 0)}</span>
+                                            <span class="upgrade-cost-item"><span class="upgrade-currency-icon currency-arcanum">券</span>${(typeof getShadowUpgradeCost(shadowInstance.level, shadowInstance.ascension || 0) === 'number') ? Math.ceil(getShadowUpgradeCost(shadowInstance.level, shadowInstance.ascension || 0) * 0.5) : '-'}</span>
                                         </span>
                                         <button class="btn-upgrade btn-upgrade-shadow" onclick="handleShadowUpgrade('${charData.instanceId}', '${shadowInstance.instanceId}')">
                                             升级
@@ -9833,11 +10355,11 @@
                 html += '<div class="ascension-module-item" style="background:' + (isUnlocked ? 'rgba(255,215,0,0.1)' : 'rgba(100,100,100,0.05)') + ';border:1px solid ' + (isUnlocked ? 'rgba(255,215,0,0.3)' : 'rgba(100,100,100,0.15)') + ';border-radius:8px;padding:10px;margin-bottom:8px;opacity:' + (isUnlocked ? '1' : '0.6') + ';">';
                 html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:4px;">';
                 html += '<span style="font-size:16px;">' + (isUnlocked ? '✨' : '🔒') + '</span>';
-                html += '<span style="font-weight:bold;color:' + (isUnlocked ? '#ffd700' : '#666') + ';font-size:14px;">' + (module ? module.name : '???') + '</span>';
-                html += '<span style="font-size:11px;color:#888;margin-left:auto;background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;">第' + (i+1) + '次升格</span>';
+                html += '<span style="font-weight:bold;color:' + (isUnlocked ? '#ffd700' : '#888') + ';font-size:14px;">' + (module ? module.name : '升格模块' + (i+1)) + '</span>';
+                html += '<span style="font-size:11px;color:#888;margin-left:auto;background:rgba(0,0,0,0.3);padding:2px 6px;border-radius:4px;">第' + (i+1) + '次升格' + (isUnlocked ? ' ✅已解锁' : '') + '</span>';
                 html += '</div>';
                 if (module) {
-                    html += '<div style="font-size:12px;color:' + (isUnlocked ? '#aaa' : '#666') + ';line-height:1.4;">' + module.desc + '</div>';
+                    html += '<div style="font-size:12px;color:' + (isUnlocked ? '#a0c0d0' : '#606878') + ';line-height:1.4;">' + module.desc + (isUnlocked ? '' : '（未解锁）') + '</div>';
                 }
                 html += '</div>';
             }
@@ -9987,30 +10509,35 @@
 
         // ==================== 升级系统函数 ====================
         
-        // 获取角色等级所需经验值
-        function getCharExpForLevel(level) {
-            if (level >= 50) return 0; // 最大等级
+        // 获取角色等级所需经验值（根据升格次数动态上限）
+        function getCharExpForLevel(level, ascension) {
+            var cap = 20 + (ascension || 0) * 20;
+            if (level >= cap) return 0; // 达到等级上限
             // 每级经验递增：基础200 + 每级递增50
             return Math.floor(200 + (level - 1) * 60);
         }
         
-        // 角色升级费用（指数曲线：起始20，每级增长约25%）
-        function getCharUpgradeCost(level) {
-            if (level >= 50) return '-';
-            // 等级1→2花费20，之后每级增长约25%
-            return Math.floor(20 * Math.pow(1.25, level - 1));
+        // 角色升级费用（指数曲线：起始10，每级增长20%，根据升格上限）
+        function getCharUpgradeCost(level, ascension) {
+            var cap = 20 + (ascension || 0) * 20;
+            if (level >= cap) return '-';
+            // 等级1→2花费10，之后每级增长20%
+            return Math.floor(10 * Math.pow(1.20, level - 1));
         }
         
-        // 罪之影升级费用（指数曲线：起始15，每级增长约25%）
-        function getShadowUpgradeCost(level) {
-            if (level >= 30) return '-';
-            return Math.floor(15 * Math.pow(1.25, level - 1));
+        // 罪之影升级费用（指数曲线：起始8，每级增长20%，根据升格上限）
+        function getShadowUpgradeCost(level, ascension) {
+            var cap = 20 + (ascension || 0) * 20;
+            if (level >= cap) return '-';
+            return Math.floor(8 * Math.pow(1.20, level - 1));
         }
         
         // 检查角色是否可以升级
         function canUpgradeChar(charData) {
-            if (charData.level >= 50) return false;
-            const voucherCost = getCharUpgradeCost(charData.level);
+            var levelCap = getCharLevelCap(charData);
+            if (charData.level >= levelCap) return false;
+            const voucherCost = getCharUpgradeCost(charData.level, charData.ascension || 0);
+            if (voucherCost === '-') return false;
             const goldCost = Math.ceil(voucherCost * 0.5);
             const vouchers = getItemQty('mat_char_voucher');
             const tickets = gameState.saveData.arcanumTickets || 0;
@@ -10027,14 +10554,15 @@
         // 获取罪影等级上限
         function getShadowLevelCap(shadowData) {
             var asc = shadowData.ascension || 0;
-            return 20 + asc * 20;
+            return 20 + asc * 20; // 0次=20, 1次=40, 2次=60, 3次=80
         }
         
         // 检查角色是否可升级
         function canUpgradeCharStrict(charData) {
             var levelCap = getCharLevelCap(charData);
             if (charData.level >= levelCap) return { can: false, reason: '已达等级上限，请先升格' };
-            const voucherCost = getCharUpgradeCost(charData.level);
+            const voucherCost = getCharUpgradeCost(charData.level, charData.ascension || 0);
+            if (voucherCost === '-') return { can: false, reason: '已达等级上限' };
             const goldCost = Math.ceil(voucherCost * 0.5);
             const vouchers = getItemQty('mat_char_voucher');
             const tickets = gameState.saveData.arcanumTickets || 0;
@@ -10093,7 +10621,7 @@
             const check = canUpgradeCharStrict(charInstance);
             if (!check.can) { alert(check.reason); return; }
             
-            const voucherCost = getCharUpgradeCost(charInstance.level);
+            const voucherCost = getCharUpgradeCost(charInstance.level, charInstance.ascension || 0);
             const goldCost = Math.ceil(voucherCost * 0.5);
 
             // 扣费（角色升级凭证[从inventory扣] + 阿卡纳金券）
@@ -10101,7 +10629,7 @@
             gameState.saveData.arcanumTickets = (gameState.saveData.arcanumTickets || 0) - goldCost;
             
             // 升级
-            charInstance.exp = (charInstance.exp || 0) - getExpForLevel(charInstance.level);
+            charInstance.exp = (charInstance.exp || 0) - getCharExpForLevel(charInstance.level, charInstance.ascension || 0);
             charInstance.level += 1;
             addTaskProgress('charUpgrade', 1);
             
@@ -10168,13 +10696,13 @@
                 html += '<div class="ascension-module" style="background:' + (isUnlocked ? 'rgba(255,215,0,0.15)' : 'rgba(100,100,100,0.1)') + ';border:1px solid ' + (isUnlocked ? 'rgba(255,215,0,0.4)' : 'rgba(100,100,100,0.2)') + ';border-radius:8px;padding:12px;margin-bottom:10px;opacity:' + (isUnlocked ? '1' : '0.5') + ';">';
                 html += '<div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">';
                 html += '<span style="font-size:20px;">' + (isUnlocked ? '✨' : '🔒') + '</span>';
-                html += '<span style="font-weight:bold;color:' + (isUnlocked ? '#ffd700' : '#808080') + ';">' + (module ? module.name : '升格模块Ⅰ') + '</span>';
-                html += '<span style="font-size:11px;color:#808080;margin-left:auto;">第' + (i+1) + '次升格</span>';
+                html += '<span style="font-weight:bold;color:' + (isUnlocked ? '#ffd700' : '#808080') + ';">' + (module ? module.name : '升格模块' + (i+1)) + '</span>';
+                html += '<span style="font-size:11px;color:#808080;margin-left:auto;">第' + (i+1) + '次升格' + (isUnlocked ? ' ✅已解锁' : '') + '</span>';
                 html += '</div>';
-                if (module && isUnlocked) {
-                    html += '<div style="font-size:13px;color:#b0b0c0;line-height:1.5;">' + module.description + '</div>';
-                } else if (module) {
-                    html += '<div style="font-size:13px;color:#606070;line-height:1.5;">???（完成第' + (i+1) + '次升格后解锁）</div>';
+                if (module) {
+                    html += '<div style="font-size:13px;color:' + (isUnlocked ? '#b0b0c0' : '#606878') + ';line-height:1.5;">' + module.desc + (isUnlocked ? '' : '（未解锁）') + '</div>';
+                } else {
+                    html += '<div style="font-size:13px;color:#505060;line-height:1.5;">此角色暂无升格模块</div>';
                 }
                 html += '</div>';
             }
@@ -10296,7 +10824,8 @@
             var levelCap = getShadowLevelCap(shadowInstance);
             if (shadowInstance.level >= levelCap) { alert('已达等级上限，请先升格'); return; }
             
-            var voucherCost = getShadowUpgradeCost(shadowInstance.level);
+            var voucherCost = getShadowUpgradeCost(shadowInstance.level, shadowInstance.ascension || 0);
+            if (voucherCost === '-') { alert('已达等级上限'); return; }
             var goldCost = Math.ceil(voucherCost * 0.5);
             var vouchers = getItemQty('mat_shadow_voucher');
             var tickets = gameState.saveData.arcanumTickets || 0;
@@ -10308,7 +10837,7 @@
             
             var template = getShadowTemplate(shadowInstance.shadowId);
             if (template) {
-                shadowInstance.exp = (shadowInstance.exp || 0) - getExpForLevel(shadowInstance.level);
+                shadowInstance.exp = (shadowInstance.exp || 0) - getShadowExpForLevel(shadowInstance.level, shadowInstance.ascension || 0);
                 shadowInstance.level += 1;
                 shadowInstance.currentAtk = calculateShadowStat(template.baseAtk, shadowInstance.level);
                 shadowInstance.currentDef = calculateShadowStat(template.baseDef, shadowInstance.level);
@@ -11152,6 +11681,16 @@
                     if (st.effect && st.effect.sanityBonus) sanityBonus = st.effect.sanityBonus;
                     if (st.effect && st.effect.dmgBonusPercent) dmgBonus = st.effect.dmgBonusPercent;
                 }
+                // 罪影特效全字段读取（职业匹配时有效）
+                var shadowEffect = null;
+                if (equippedShadow && SHADOW_TEMPLATES[equippedShadow.shadowId]) {
+                    var stFull = SHADOW_TEMPLATES[equippedShadow.shadowId];
+                    var tChar = getCharacterTemplate(c.charId);
+                    var profMatch = tChar && stFull.profession === tChar.profession;
+                    if (profMatch && stFull.effect) {
+                        shadowEffect = stFull.effect;
+                    }
+                }
                 var ascBonus = getAscensionBonus(c);
                 var finalAtk = s.atk + ascBonus.atkBonus;
                 var finalDef = s.def + ascBonus.defBonus;
@@ -11192,7 +11731,17 @@
                     deck[d] = deck[rand];
                     deck[rand] = tmp;
                 }
-                battle.allies.push({ id: 'ally_' + i, name: t.name, charId: c.charId, instanceId: c.instanceId, hp: finalHp, maxHp: finalHp, atk: finalAtk, def: finalDef, speed: s.speed, fortitude: s.fortitude, maxFortitude: s.fortitude, alive: true, skills: finalSkills, deck: deck, handCards: [], sinType: t.sinType, rarity: t.rarity, isAlly: true, sanity: sanityBonus, critRate: 0.05 + (relicStats.critRate || 0), critDmg: 1.5 + (relicStats.critDmg || 0) / 100, dmgBonusPercent: dmgBonus, buffs: [], debuffs: [], shield: 0, baseSpeed: s.speed, baseAtk: finalAtk, baseDef: finalDef, ascensionEffects: ascensionEffects, ascensionLevel: c.ascensionLevel || 0, charge: 0, maxCharge: 6 });
+                var battleUnit = { id: 'ally_' + i, name: t.name, charId: c.charId, instanceId: c.instanceId, hp: finalHp, maxHp: finalHp, atk: finalAtk, def: finalDef, speed: s.speed, fortitude: s.fortitude, maxFortitude: s.fortitude, alive: true, skills: finalSkills, deck: deck, handCards: [], sinType: t.sinType, rarity: t.rarity, isAlly: true, sanity: sanityBonus, critRate: 0.05 + (relicStats.critRate || 0), critDmg: 1.5 + (relicStats.critDmg || 0) / 100, dmgBonusPercent: dmgBonus, buffs: [], debuffs: [], shield: 0, baseSpeed: s.speed, baseAtk: finalAtk, baseDef: finalDef, ascensionEffects: ascensionEffects, ascension: c.ascension || 0, ascensionLevel: c.ascensionLevel || 0, charge: 0, maxCharge: 6, shadowEffect: shadowEffect, luoZhuStacks: 0, _sanityImmuneOnce: false, _sanityImmuneOnceUsed: false };
+                // 不秋草初始化
+                if (c.charId === 'char_006') {
+                    // 星名·天伤星免疫标志已在battleUnit中初始化
+                }
+                // 诺亚初始化专属字段
+                if (c.charId === 'char_007') {
+                    battleUnit.angerStacks = 0;
+                    battleUnit._hpLossPercent = 0;
+                }
+                battle.allies.push(battleUnit);
             }
             
             var enemies = ENEMY_TEMPLATES[stageId] || ENEMY_TEMPLATES['s1-1'];
@@ -11298,6 +11847,13 @@
                 var shieldHtml = u.shield > 0 ? '<div class="shield-indicator">🛡' + Math.floor(u.shield) + '</div>' : '';
                 // 充能显示（仅Zwei）
                 var chargeHtml = (u.charId === 'char_005' && u.charge !== undefined) ? '<div class="charge-indicator">⚡' + u.charge + '/' + (u.maxCharge||6) + '</div>' : '';
+                // 牌库中将死亡押入枪膛数量（仅Zwei）
+                if (u.charId === 'char_005') {
+                    var bulletCount = (u.deck || []).filter(function(c) { return c.name === '将死亡押入枪膛'; }).length;
+                    if (bulletCount > 0) {
+                        chargeHtml += '<div class="charge-indicator" style="color:#ff8080;">💀×' + bulletCount + '</div>';
+                    }
+                }
                 // 状态效果图标
                 var buffsHtml = '';
                 var allEffects = (u.buffs||[]).map(function(b){return {name:b.name,icon:b.icon||'↑',turns:b.turns,positive:true}}).concat(
@@ -11323,11 +11879,53 @@
                 } else if (isAttackTarget) {
                     div.addEventListener('click', function(uid) { return function() { selectTarget(uid); }; }(u.id));
                 }
+                // 双击查看牌库（我方）/ 技能列表（敌方）
+                (function(unit, isAllyUnit) {
+                    var lastClick = 0;
+                    div.addEventListener('click', function(e) {
+                        var now = Date.now();
+                        if (now - lastClick < 350) {
+                            e.stopImmediatePropagation();
+                            showUnitDeck(unit);
+                        }
+                        lastClick = now;
+                    });
+                    // 长按查看属性（ATK/DEF/SPD/暴击率/暴击伤害）
+                    var pressTimer = null;
+                    div.addEventListener('mousedown', function() {
+                        pressTimer = setTimeout(function() { showCharacterStats(unit); }, 500);
+                    });
+                    div.addEventListener('mouseup', function() { clearTimeout(pressTimer); });
+                    div.addEventListener('mouseleave', function() { clearTimeout(pressTimer); });
+                    div.addEventListener('touchstart', function() {
+                        pressTimer = setTimeout(function() { showCharacterStats(unit); }, 500);
+                    }, { passive: true });
+                    div.addEventListener('touchend', function() { clearTimeout(pressTimer); });
+                    div.addEventListener('touchmove', function() { clearTimeout(pressTimer); });
+                })(u, isAlly);
                 el.appendChild(div);
             });
         }
 
         function renderSkillPanel() {
+            // 每次渲染技能面板时，强制补满所有存活角色的手牌（防止自动战斗或手动切换时手牌为空）
+            if (battle.phase === 'command') {
+                battle.allies.forEach(function(a) {
+                    if (!a.alive) return;
+                    if (a.handCards.length === 0 && a.deck.length > 0) {
+                        var normalDeck = a.deck.filter(function(c) { return !c.autoUse; });
+                        var drawCount = Math.min(2, normalDeck.length);
+                        for (var d = 0; d < drawCount; d++) {
+                            for (var di = a.deck.length - 1; di >= 0; di--) {
+                                if (!a.deck[di].autoUse) {
+                                    a.handCards.push(a.deck.splice(di, 1)[0]);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+            }
             var header = document.getElementById('battle-skill-header');
             var skillsEl = document.getElementById('battle-skills');
             var confirmBtn = document.getElementById('btn-battle-confirm');
@@ -11348,11 +11946,18 @@
                 if (battle.allies[j].id === battle.selectedAlly) { ally = battle.allies[j]; break; }
             }
             if (!ally) return;
-            // 如果手牌为空且牌库有牌，抽2张
+            // 如果手牌为空且牌库有牌，抽2张（跳过autoUse特殊牌）
             if (ally.handCards.length === 0 && ally.deck.length > 0) {
-                var drawCount = Math.min(2, ally.deck.length);
+                var normalDeck = ally.deck.filter(function(c) { return !c.autoUse; });
+                var drawCount = Math.min(2, normalDeck.length);
                 for (var d = 0; d < drawCount; d++) {
-                    ally.handCards.push(ally.deck.pop());
+                    // 从完整deck中找到并取出第一张非autoUse的牌（从末尾遍历）
+                    for (var di = ally.deck.length - 1; di >= 0; di--) {
+                        if (!ally.deck[di].autoUse) {
+                            ally.handCards.push(ally.deck.splice(di, 1)[0]);
+                            break;
+                        }
+                    }
                 }
             }
             var acted = !!battle.allyActions[ally.id];
@@ -11528,9 +12133,31 @@
             }
         }
 
+        // 自动战斗时，为所有手牌为空的存活角色补满手牌
+        function autoRefillAllHands() {
+            battle.allies.forEach(function(a) {
+                if (!a.alive) return;
+                if (a.handCards.length === 0 && a.deck.length > 0) {
+                    var normalDeck = a.deck.filter(function(c) { return !c.autoUse; });
+                    var drawCount = Math.min(2, normalDeck.length);
+                    for (var d = 0; d < drawCount; d++) {
+                        for (var di = a.deck.length - 1; di >= 0; di--) {
+                            if (!a.deck[di].autoUse) {
+                                a.handCards.push(a.deck.splice(di, 1)[0]);
+                                break;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         function autoBattleOnce() {
             if (!battle.autoBattle) return;
             if (battle.phase === 'command' && !battle.animating) {
+                // 先为手牌为空的角色补满手牌
+                autoRefillAllHands();
+                
                 // 为未行动的角色自动选择
                 var acted = 0;
                 for (var i = 0; i < battle.allies.length; i++) {
@@ -11633,6 +12260,15 @@
                         showDamageFloat(u.id, dotDmgVal, false, 'dot');
                         await delay(200);
                     }
+                    // 蜜毒：每回合损失固定%最大HP
+                    if (d.name === '蜜毒' && d.poisonPercent) {
+                        var meiduDmg = Math.floor(u.maxHp * d.poisonPercent);
+                        u.hp = Math.max(0, u.hp - meiduDmg);
+                        if (u.hp <= 0) u.alive = false;
+                        showDamageFloat(u.id, meiduDmg, false);
+                        addLog(u.name + ' 蜜毒持续伤害 ' + meiduDmg, 'damage');
+                        await delay(200);
+                    }
                     d.turns--;
                     if (d.turns <= 0) {
                         // 移除debuff，还原属性
@@ -11641,6 +12277,8 @@
                         if (d.dmgTakenBonus) { u.dmgTakenBonus = (u.dmgTakenBonus||0) - d.dmgTakenBonus; }
                         if (d.frozen) { /* 冰冻自然解除 */ }
                         if (d.basePowerReduce) { u.basePowerReduce = (u.basePowerReduce||0) - d.basePowerReduce; }
+                        // 护甲溶解过期：还原防御
+                        if (d.name === '护甲溶解' && d.defReduceAmount) { u.def = Math.min(u.baseDef || u.def, Math.floor(u.def / Math.max(0.1, 1 - d.defReduceAmount))); }
                         addLog(u.name + ' 的' + d.name + '消失了', 'system');
                         u.debuffs.splice(di, 1);
                     }
@@ -11658,6 +12296,13 @@
                         if (b.dmgReduction) { u.dmgReduction = (u.dmgReduction||0) - b.dmgReduction; }
                         if (b.evasion) { u.evasion = (u.evasion||0) - b.evasion; }
                         if (b.coinPowerBoost) { u.coinPowerBoost = (u.coinPowerBoost||0) - b.coinPowerBoost; }
+                        // 迅刃SSR罪影暴伤加成还原
+                        if (b.critDmgBonus) { u.critDmg = Math.max(1.5, (u.critDmg||1.5) - b.critDmgBonus); }
+                        // 圣音护盾防御加成还原
+                        if (b.defBonus && b.name === '圣音护盾') {
+                            u.def = Math.max(1, Math.floor(u.def / (1 + b.defBonus)));
+                            u._shieldDefBonus = Math.max(0, (u._shieldDefBonus||0) - b.defBonus);
+                        }
                         addLog(u.name + ' 的' + b.name + '消失了', 'system');
                         u.buffs.splice(bi, 1);
                     }
@@ -11686,10 +12331,24 @@
             battle.enemies.forEach(e => {
                 if (!e.alive) return;
                 if ((e.debuffs||[]).some(function(d){return d.frozen})) return; // 冰冻跳过
-                const targets = battle.allies.filter(a => a.alive);
+                var targets = battle.allies.filter(function(a){ return a.alive; });
                 if (targets.length === 0) return;
+                // 诺亚升格模块一 嘲讽：诺亚自身受击概率+50%
+                // 检查场上是否有诺亚且拥有嘲讽模块
+                var noahTaunt = false;
+                var noahChar = null;
+                battle.allies.forEach(function(ally) {
+                    if (ally.charId === 'char_007' && ally.ascension >= 1) {
+                        var mods = getCharacterAscensionModules('char_007');
+                        if (mods[0] && mods[0].id === 'asc_007_1') { noahTaunt = true; noahChar = ally; }
+                    }
+                });
+                if (noahTaunt && noahChar && noahChar.alive) {
+                    // 诺亚受击概率+50%：将诺亚复制一份到targets数组（权重×2）
+                    targets.push(noahChar);
+                }
                 // 策略：优先攻击HP最低的目标（boss攻击随机目标）
-                let target;
+                var target;
                 if (e.skills.length > 1 && Math.random() < 0.3) {
                     // 30%概率使用第二个技能
                     battle.enemyActions[e.id] = { skillIdx: 1, targetId: targets[0].id };
@@ -11871,9 +12530,8 @@
                             applyDamage(aoeTarget, aoeResult.dmg, u1);
                             addLog(u1.name + ' 群攻 ' + aoeTarget.name + ' 造成 ' + aoeResult.dmg + ' 伤害' + (aoeResult.isCrit ? '（暴击！）' : ''), 'damage');
                             showDamageFloat(aoeTarget.id, aoeResult.dmg, aoeResult.isCrit);
-                            aoeTarget.fortitude = Math.max(0, aoeTarget.fortitude - 2);
-                            if (aoeTarget.fortitude <= 0) { var bd = Math.floor(aoeResult.dmg*0.2); applyDamage(aoeTarget, bd, u1); }
-                        }
+                            applyFortitudeDamage(u1, aoeTarget, 2);
+                    }
                     } else if (t1) {
                         var result = calcDamage(u1, sk1, t1, heads1);
                         applyDamage(t1, result.dmg, u1);
@@ -11883,8 +12541,9 @@
                         else if (result.resistRate < 0) logText += '（克制+' + Math.round(-result.resistRate*100) + '%）';
                         addLog(logText, 'damage');
                         showDamageFloat(t1.id, result.dmg, result.isCrit);
-                        t1.fortitude = Math.max(0, t1.fortitude - 3);
-                        if (t1.fortitude <= 0) { var bd = Math.floor(result.dmg*0.2); applyDamage(t1, bd, u1); addLog(t1.name + ' 坚韧破裂 +' + bd, 'damage'); }
+                        // 审判之锤和最终裁决的削韧在applyTalentAfterDamage中处理
+                        var baseFortDmg1 = (u1.charId === 'char_104' && (sk1.name === '审判之锤' || sk1.name === '最终裁决')) ? 0 : 3;
+                        applyFortitudeDamage(u1, t1, baseFortDmg1);
                     }
                 }
             // u1胜利：天赋伤害后效果
@@ -11902,9 +12561,8 @@
                             applyDamage(aoeTarget, aoeResult.dmg, u2);
                             addLog(u2.name + ' 群攻 ' + aoeTarget.name + ' 造成 ' + aoeResult.dmg + ' 伤害' + (aoeResult.isCrit ? '（暴击！）' : ''), 'damage');
                             showDamageFloat(aoeTarget.id, aoeResult.dmg, aoeResult.isCrit);
-                            aoeTarget.fortitude = Math.max(0, aoeTarget.fortitude - 2);
-                            if (aoeTarget.fortitude <= 0) { var bd = Math.floor(aoeResult.dmg*0.2); applyDamage(aoeTarget, bd, u2); }
-                        }
+                            applyFortitudeDamage(u2, aoeTarget, 2);
+                    }
                     } else if (t2) {
                         var result = calcDamage(u2, sk2, t2, heads2);
                         applyDamage(t2, result.dmg, u2);
@@ -11914,8 +12572,9 @@
                         else if (result.resistRate < 0) logText += '（克制+' + Math.round(-result.resistRate*100) + '%）';
                         addLog(logText, 'damage');
                         showDamageFloat(t2.id, result.dmg, result.isCrit);
-                        t2.fortitude = Math.max(0, t2.fortitude - 3);
-                        if (t2.fortitude <= 0) { var bd = Math.floor(result.dmg*0.2); applyDamage(t2, bd, u2); addLog(t2.name + ' 坚韧破裂 +' + bd, 'damage'); }
+                        // 审判之锤和最终裁决的削韧在applyTalentAfterDamage中处理
+                        var baseFortDmg2 = (u2.charId === 'char_104' && (sk2.name === '审判之锤' || sk2.name === '最终裁决')) ? 0 : 3;
+                        applyFortitudeDamage(u2, t2, baseFortDmg2);
                     }
                 }
             // u2胜利：天赋伤害后效果
@@ -11926,8 +12585,26 @@
                 addLog('拼点平局（' + p1 + ' vs ' + p2 + '）双方抵消', 'clash');
             }
             // 拼点后理智变化：胜利+3，失败-3，平局0
-            if (p1 > p2) { u1.sanity = Math.min(45, (u1.sanity||0) + 3); u2.sanity = Math.max(-45, (u2.sanity||0) - 3); }
-            else if (p2 > p1) { u2.sanity = Math.min(45, (u2.sanity||0) + 3); u1.sanity = Math.max(-45, (u1.sanity||0) - 3); }
+            if (p1 > p2) {
+                u1.sanity = Math.min(45, (u1.sanity||0) + 3);
+                // u2失败：检查星名·天伤星理智减少免疫
+                if (u2.charId === 'char_006' && u2.ascension >= 3 && u2._sanityImmuneOnce) {
+                    u2._sanityImmuneOnce = false;
+                    addLog(u2.name + '【星名·天伤星】理智减少免疫生效！', 'buff');
+                } else {
+                    u2.sanity = Math.max(-45, (u2.sanity||0) - 3);
+                }
+            }
+            else if (p2 > p1) {
+                u2.sanity = Math.min(45, (u2.sanity||0) + 3);
+                // u1失败：检查星名·天伤星理智减少免疫
+                if (u1.charId === 'char_006' && u1.ascension >= 3 && u1._sanityImmuneOnce) {
+                    u1._sanityImmuneOnce = false;
+                    addLog(u1.name + '【星名·天伤星】理智减少免疫生效！', 'buff');
+                } else {
+                    u1.sanity = Math.max(-45, (u1.sanity||0) - 3);
+                }
+            }
             renderBattle(); await delay(600);
         }
 
@@ -11971,21 +12648,74 @@
             addLog(attacker.name + ' 使用 ' + skill.name + '（正面' + heads + '/' + skill.coinCount + '）', 'system');
 
             // 根据技能名分发效果
+            // 圣歌天赋/升华辅助：计算治疗加成倍率
+            var hymnHealMult = 1.0;
+            if (attacker.charId === 'char_004') {
+                var ascLv004 = attacker.ascensionLevel || 0;
+                if (ascLv004 >= 1) hymnHealMult = 1.15; // 升华1阶：15%
+                else hymnHealMult = 1.08;               // 基础天赋：8%
+            }
             switch (skill.name) {
                 case '治愈之光': {
-                    // 恢复友方攻击力150% HP
-                    var heal = Math.floor(attacker.atk * 1.5);
+                    // 恢复友方攻击力150% HP（含慈悲颂歌治疗加成）
+                    var baseHeal = Math.floor(attacker.atk * 1.5);
+                    // 疗愈罪影加成
+                    if (attacker.shadowEffect && attacker.shadowEffect.healBonus) {
+                        var healBonusMult = 1 + attacker.shadowEffect.healBonus;
+                        if (attacker.shadowEffect.emergencyHealBonus && target.hp / target.maxHp < (attacker.shadowEffect.emergencyThreshold || 0.5)) {
+                            healBonusMult += attacker.shadowEffect.emergencyHealBonus;
+                        }
+                        baseHeal = Math.floor(baseHeal * healBonusMult);
+                    }
+                    var heal = Math.floor(baseHeal * hymnHealMult);
                     target.hp = Math.min(target.maxHp, target.hp + heal);
                     showDamageFloat(target.id, '+' + heal, false);
                     addLog(target.name + ' 恢复 ' + heal + ' HP', 'heal');
+                    // 升华2阶：额外清除1个debuff
+                    if (attacker.charId === 'char_004' && (attacker.ascensionLevel || 0) >= 2) {
+                        if (target.debuffs && target.debuffs.length > 0) {
+                            var removed = target.debuffs.shift();
+                            addLog(target.name + ' 被清除debuff：' + removed.name + '（治愈之光·升华）', 'buff');
+                        }
+                    }
+                    // 疗愈SSR罪影：治疗时附加护盾
+                    if (attacker.shadowEffect && attacker.shadowEffect.healToShieldPercent) {
+                        var shieldFromHeal = Math.floor(heal * attacker.shadowEffect.healToShieldPercent);
+                        target.shield = (target.shield || 0) + shieldFromHeal;
+                        if (!target.buffs) target.buffs = [];
+                        target.buffs.push({ name:'晨曦护盾', icon:'🛡', turns:2, type:'shield', shieldVal:shieldFromHeal, dmgReduction: attacker.shadowEffect.shieldDmgReduction || 0 });
+                        addLog(target.name + ' 获得 ' + shieldFromHeal + ' 晨曦护盾', 'heal');
+                    }
+                    // 疗愈R罪影：附加持续恢复
+                    if (attacker.shadowEffect && attacker.shadowEffect.regenPercentPerTurn) {
+                        if (!target.buffs) target.buffs = [];
+                        target.buffs.push({ name:'持续恢复', icon:'💚', turns: attacker.shadowEffect.regenDuration || 2, type:'regen', regenPercent: attacker.shadowEffect.regenPercentPerTurn });
+                        addLog(target.name + ' 获得持续恢复效果（每回合+' + Math.floor(attacker.shadowEffect.regenPercentPerTurn * 100) + '%HP，' + (attacker.shadowEffect.regenDuration || 2) + '回合）', 'heal');
+                    }
+                    // 协律SR罪影：支援技能额外回复5%
+                    if (attacker.shadowEffect && attacker.shadowEffect.supportHealPercent) {
+                        var bonusHeal = Math.floor(target.maxHp * attacker.shadowEffect.supportHealPercent);
+                        target.hp = Math.min(target.maxHp, target.hp + bonusHeal);
+                        addLog(target.name + ' 额外恢复 ' + bonusHeal + ' HP（走调才好听）', 'heal');
+                    }
                     break;
                 }
                 case '圣音护盾': {
                     // 提供友方攻击力200%护盾，硬币正面+50%
                     var shieldVal = attacker.atk * 2 + heads * attacker.atk * 0.5;
+                    // 升华4阶：护盾期间防御+15%
+                    var defBoostFromShield = 0;
+                    if (attacker.charId === 'char_004' && (attacker.ascensionLevel || 0) >= 4) {
+                        defBoostFromShield = 0.15;
+                    }
                     target.shield = (target.shield || 0) + shieldVal;
                     if (!target.buffs) target.buffs = [];
-                    target.buffs.push({ name:'圣音护盾', icon:'🛡', turns:2, type:'shield', shieldVal:shieldVal });
+                    target.buffs.push({ name:'圣音护盾', icon:'🛡', turns:2, type:'shield', shieldVal:shieldVal, defBonus: defBoostFromShield });
+                    if (defBoostFromShield > 0) {
+                        target.def = Math.floor(target.def * (1 + defBoostFromShield));
+                        target._shieldDefBonus = (target._shieldDefBonus || 0) + defBoostFromShield;
+                        addLog(target.name + ' 圣音护盾期间防御+15%（升华4阶）', 'buff');
+                    }
                     showDamageFloat(target.id, '🛡' + Math.floor(shieldVal), false);
                     addLog(target.name + ' 获得 ' + Math.floor(shieldVal) + ' 护盾', 'heal');
                     break;
@@ -12016,10 +12746,12 @@
                     break;
                 }
                 case '钢铁意志': {
-                    // 自身获得15%免伤(2回合)，硬币正面+8%(最多35%)
-                    var drAdd = 0.15 + heads * 0.08;
+                    // 自身获得免伤(2回合)，基础15%，升华4阶提升至20%，硬币正面+8%(最多35%→40%)
+                    var baseDr = ((attacker.ascensionLevel || 0) >= 4) ? 0.20 : 0.15;
+                    var drAdd = baseDr + heads * 0.08;
+                    var maxDr = ((attacker.ascensionLevel || 0) >= 4) ? 0.40 : 0.35;
                     var currentDr = attacker.dmgReduction || 0;
-                    attacker.dmgReduction = Math.min(0.35, currentDr + drAdd);
+                    attacker.dmgReduction = Math.min(maxDr, currentDr + drAdd);
                     if (!attacker.buffs) attacker.buffs = [];
                     attacker.buffs.push({ name:'钢铁意志', icon:'🛡', turns:2, type:'dmgReduction', dmgReduction:drAdd });
                     showDamageFloat(attacker.id, '🛡+' + Math.round(drAdd*100) + '%免伤', false);
@@ -12069,9 +12801,9 @@
                     break;
                 }
                 case '时间凝滞': {
-                    // 所有敌人基础威力-2(1回合)，硬币正面延1回合
+                    // 所有敌人基础威力-2(1回合)，升华4阶提升至-3，硬币正面延1回合
                     var duration = 1 + heads;
-                    var bpReduce = 2;
+                    var bpReduce = ((attacker.ascensionLevel || 0) >= 4) ? 3 : 2;
                     battle.enemies.forEach(function(e) {
                         if (!e.alive) return;
                         e.basePowerReduce = (e.basePowerReduce || 0) + bpReduce;
@@ -12090,9 +12822,9 @@
                     var hpConsume = Math.floor(attacker.maxHp * hpConsumePercent);
                     // 升格模块：极限 - 血量最小保留1点
                     var mods = getCharacterAscensionModules(attacker.charId);
-                    var ascLevel = attacker.ascensionLevel || 0;
+                    var modAscLevel = attacker.ascension || 0;
                     var hasLimitMod = false;
-                    for (var i = 0; i < Math.min(ascLevel, mods.length); i++) {
+                    for (var i = 0; i < Math.min(modAscLevel, mods.length); i++) {
                         if (mods[i].id === 'asc_005_1') { hasLimitMod = true; break; }
                     }
                     if (hasLimitMod && attacker.hp - hpConsume < 1) {
@@ -12121,9 +12853,12 @@
                         attacker.charge = attacker.maxCharge || 6;
                     }
                     
-                    // 消耗血量时置入1张将死亡押入枪膛（天赋效果）
-                    addSpecialCardToDeck(attacker, '将死亡押入枪膛');
-                    addLog(attacker.name + '【准备工作】置入1张将死亡押入枪膛', 'buff');
+                    // 消耗血量时，每次消耗置入1张将死亡押入枪膛（天赋效果）
+                    // hpConsumeTimes = 1 + heads，消耗几次就置入几张
+                    for (var dc = 0; dc < hpConsumeTimes; dc++) {
+                        addSpecialCardToDeck(attacker, '将死亡押入枪膛');
+                    }
+                    addLog(attacker.name + '【准备工作】消耗血量' + hpConsumeTimes + '次，置入' + hpConsumeTimes + '张将死亡押入枪膛', 'buff');
                     break;
                 }
                 case '拟物派·死亡': {
@@ -12169,6 +12904,99 @@
                     useAllDeathBullets(attacker, heads);
                     break;
                 }
+                
+                // ========== 诺亚 - 世界之键技能 ==========
+                case '烈火焚心': {
+                    // 流失30%当前血量
+                    var hpLoss = Math.floor(attacker.hp * 0.30);
+                    attacker.hp = Math.max(1, attacker.hp - hpLoss);
+                    // 升格模块二：记录失血百分比
+                    var lostPct = hpLoss / attacker.maxHp;
+                    attacker._hpLossPercent = Math.min(1.0, (attacker._hpLossPercent || 0) + lostPct);
+                    showDamageFloat(attacker.id, '-' + hpLoss + 'HP', false);
+                    addLog(attacker.name + '【烈火焚心】流失 ' + hpLoss + ' HP', 'damage');
+                    // 为所有队友提供护盾（诺亚10%最大HP）
+                    var shieldAmt = Math.floor(attacker.maxHp * 0.10);
+                    battle.allies.forEach(function(ally) {
+                        if (ally.alive) {
+                            ally.shield = (ally.shield || 0) + shieldAmt;
+                            if (!ally.buffs) ally.buffs = [];
+                            ally.buffs.push({ name:'烈火护盾', icon:'🔥', turns:2, type:'shield', shieldVal:shieldAmt });
+                            showDamageFloat(ally.id, '🛡' + shieldAmt, false);
+                        }
+                    });
+                    addLog('全队获得 ' + shieldAmt + ' 烈火护盾', 'buff');
+                    // 正面时额外获得1层怒火
+                    if (heads > 0) {
+                        addAngerStack(attacker, null);
+                        addLog(attacker.name + '【烈火焚心】正面，额外获得1层怒火', 'buff');
+                    }
+                    break;
+                }
+                case '燎原火引': {
+                    // 嘲讽所有敌人2回合
+                    var tauntDuration = ((attacker.ascensionLevel || 0) >= 2) ? 3 : 2; // 此处暂留扩展入口（升华2阶效果已改）
+                    battle.enemies.forEach(function(enemy) {
+                        if (enemy.alive) {
+                            if (!enemy.debuffs) enemy.debuffs = [];
+                            enemy.debuffs.push({ name:'嘲讽', icon:'😡', turns: 2, tauntTarget: attacker.id });
+                            showDamageFloat(enemy.id, '😡嘲讽', false);
+                        }
+                    });
+                    addLog(attacker.name + '【燎原火引】嘲讽所有敌人2回合', 'buff');
+                    // 正面时使所有敌人获得3层灼烧
+                    if (heads > 0) {
+                        battle.enemies.forEach(function(enemy) {
+                            if (enemy.alive) {
+                                applyBurnDebuff(attacker, enemy, 3);
+                            }
+                        });
+                        addLog('全体敌人获得3层灼烧', 'debuff');
+                    }
+                    break;
+                }
+
+                // ========== 不秋草 - 拟竹派技能 ==========
+                case '酒过三巡': {
+                    // 理智减少10点，立即使用三次打叶声，正面时替换一张折竹一枚为奥义
+                    applyJiuGuoSanXun(attacker);
+                    // 硬币正面时替换
+                    if (heads > 0) {
+                        addLog(attacker.name + '【酒过三巡】正面，替换「折竹一枚」为「奥义·茕茕不秋草」', 'buff');
+                    }
+                    break;
+                }
+                case '奥义·茕茕不秋草': {
+                    // 使用五次打叶声，正面时改为7次
+                    var yueyueCount = 5;
+                    if (heads > 0) yueyueCount = 7;
+                    for (var i = 0; i < yueyueCount; i++) {
+                        applyDaYeShengNoLuoZhu(attacker);
+                    }
+                    addLog(attacker.name + ' 使用「奥义·茕茕不秋草」，触发' + yueyueCount + '次打叶声', 'buff');
+                    // 穿林风（升格模块二）：奥义后立即使用5次打叶声
+                    if (attacker.ascension >= 2) {
+                        var mods2 = getCharacterAscensionModules('char_006');
+                        if (mods2[1] && mods2[1].id === 'asc_006_2') {
+                            for (var ci = 0; ci < 5; ci++) {
+                                applyDaYeShengNoLuoZhu(attacker);
+                            }
+                            addLog(attacker.name + '【穿林风】奥义后触发5次打叶声', 'buff');
+                        }
+                    }
+                    // 星名·天伤星（升格模块三）：速度≥125时奥义额外使其生效一次
+                    if (attacker.ascension >= 2) {
+                        var mods3 = getCharacterAscensionModules('char_006');
+                        if (mods3[2] && mods3[2].id === 'asc_006_3' && attacker.speed >= 125) {
+                            addLog(attacker.name + '【星名·天伤星】奥义额外生效', 'buff');
+                            for (var di = 0; di < yueyueCount; di++) {
+                                applyDaYeShengNoLuoZhu(attacker);
+                            }
+                        }
+                    }
+                    break;
+                }
+                
                 default: {
                     // 通用支援：回复基础威力*5的HP
                     var heal = skill.basePower * 5;
@@ -12180,6 +13008,14 @@
                     break;
                 }
             }
+            // 协律SSR罪影：支援技能为目标施加增益时，额外使目标下回合速度+3
+            if (attacker.shadowEffect && attacker.shadowEffect.supportSpeedBonus && skill.type === 'support' && target && target.isAlly) {
+                target.speed = Math.min(target.speed + attacker.shadowEffect.supportSpeedBonus, 99);
+                if (!target.buffs) target.buffs = [];
+                target.buffs.push({ name:'再无安可', icon:'🎵', turns:1, speedReduce: -(attacker.shadowEffect.supportSpeedBonus) });
+                addLog(target.name + '【终曲余韵】速度+' + attacker.shadowEffect.supportSpeedBonus, 'buff');
+            }
+            // 协律R罪影：支援效果+15%，相邻队友效果减半（已在具体效果处理，此处做辅助补充日志）
             renderBattle(); await delay(200);
         }
 
@@ -12234,9 +13070,9 @@
                 var hpConsume = Math.floor(attacker.maxHp * 0.2);
                 // 升格模块：极限 - 血量最小保留1点
                 var mods = getCharacterAscensionModules(attacker.charId);
-                var ascLevel = attacker.ascensionLevel || 0;
+                var modAscLevel = attacker.ascension || 0;
                 var hasLimitMod = false;
-                for (var mi = 0; mi < Math.min(ascLevel, mods.length); mi++) {
+                for (var mi = 0; mi < Math.min(modAscLevel, mods.length); mi++) {
                     if (mods[mi].id === 'asc_005_1') { hasLimitMod = true; break; }
                 }
                 if (hasLimitMod && attacker.hp - hpConsume < 1) {
@@ -12300,6 +13136,31 @@
                 }
             }
             
+            // ========== 不秋草 - 折竹一枚特殊处理 ==========
+            if (skill.name === '折竹一枚' && target && target.alive) {
+                // 附加15%减防
+                var zheZhuDefDown = 0.15;
+                if (!target.debuffs) target.debuffs = [];
+                target.debuffs.push({ name: '护甲溶解', icon: '🎋', turns: 2, defReduceAmount: zheZhuDefDown });
+                target.def = Math.floor(target.def * (1 - zheZhuDefDown));
+                addLog(target.name + ' 防御力下降15%（折竹一枚）', 'debuff');
+                
+                // 每个正面额外触发一次打叶声（会获得落竹）
+                if (heads > 0) {
+                    for (var zz = 0; zz < heads; zz++) {
+                        applyDaYeSheng(attacker);  // 改用会添加落竹的打叶声
+                    }
+                    addLog(attacker.name + ' 折竹一枚·正面，触发' + heads + '次打叶声', 'buff');
+                }
+                
+                // 升华2阶：每个正面额外削韧+1
+                if ((attacker.ascensionLevel || 0) >= 2 && heads > 0) {
+                    var extraFortDmg = heads;
+                    target.fortitude = Math.max(0, target.fortitude - extraFortDmg);
+                    addLog(target.name + ' 坚韧值-' + extraFortDmg + '（折竹一枚·升华）', 'damage');
+                }
+            }
+            
             // 群攻判定：skill.targetType === 'all' 时攻击所有存活敌人
             if (skill.targetType === 'all') {
                 var aoeTargets = attacker.isAlly ? battle.enemies.filter(function(e) { return e.alive; }) : battle.allies.filter(function(a) { return a.alive; });
@@ -12309,9 +13170,67 @@
                     applyDamage(aoeTarget, aoeResult.dmg, attacker);
                     addLog(attacker.name + ' 群攻 ' + aoeTarget.name + ' 造成 ' + aoeResult.dmg + ' 伤害' + (aoeResult.isCrit ? '（暴击！）' : ''), 'damage');
                     showDamageFloat(aoeTarget.id, aoeResult.dmg, aoeResult.isCrit);
-                    aoeTarget.fortitude = Math.max(0, aoeTarget.fortitude - 2);
-                    if (aoeTarget.fortitude <= 0) { var bd = Math.floor(aoeResult.dmg*0.2); applyDamage(aoeTarget, bd, attacker); }
+                    applyFortitudeDamage(attacker, aoeTarget, 2);
+                    // 群攻时为每个目标调用天赋效果
+                    if (skill.type === 'attack') {
+                        applyTalentAfterDamage(attacker, skill, aoeTarget, aoeResult.dmg, heads);
+                    }
                 }
+                // 火炎飞羽：施加防御下降效果
+                if (skill.name === '火炎飞羽') {
+                    var defDownRate = 0.30;
+                    // 升华4阶：防御下降效果提升至50%
+                    if (attacker.charId === 'char_002' && (attacker.ascensionLevel || 0) >= 4) {
+                        defDownRate = 0.50;
+                    }
+                    for (var fi = 0; fi < aoeTargets.length; fi++) {
+                        var fireTarget = aoeTargets[fi];
+                        if (!fireTarget.debuffs) fireTarget.debuffs = [];
+                        fireTarget.debuffs.push({ name: '护甲溶解', icon: '🔥', turns: 2, defReduceAmount: defDownRate });
+                        fireTarget.def = Math.floor(fireTarget.def * (1 - defDownRate));
+                        addLog(fireTarget.name + ' 防御力下降' + Math.round(defDownRate * 100) + '%（' + Math.floor(defDownRate * 100) + '%）', 'debuff');
+                    }
+                }
+            } else if (skill.name === '以怒焚融冰原' && attacker.charId === 'char_007') {
+                // 诺亚主动使用：基础伤害=诺亚最大HP * 30%
+                var baseDmgFuse = Math.floor(attacker.maxHp * 0.30);
+                // 升格模块二：失血加成
+                var dmgBonusFuse = 1.0;
+                if (attacker._hpLossPercent) {
+                    dmgBonusFuse = 1.0 + Math.min(1.0, attacker._hpLossPercent);
+                    addLog('  升格模块二：失血加成 +' + Math.round(attacker._hpLossPercent * 100) + '%', 'buff');
+                    attacker._hpLossPercent = 0;
+                }
+                var finalFuseDmg = Math.floor(baseDmgFuse * dmgBonusFuse);
+                applyDamage(target, finalFuseDmg, attacker);
+                showDamageFloat(target.id, finalFuseDmg, false);
+                addLog(attacker.name + '【以怒焚融冰原】对 ' + target.name + ' 造成 ' + finalFuseDmg + ' 伤害', 'damage');
+                // 每个正面额外攻击一名其他敌人
+                if (heads > 0) {
+                    var extraEnemies = battle.enemies.filter(function(e) { return e.alive && e.id !== target.id; });
+                    var maxExtra = Math.min(heads, extraEnemies.length);
+                    for (var ei = 0; ei < maxExtra; ei++) {
+                        var extraDmgFuse = Math.floor(finalFuseDmg * 0.6);
+                        applyDamage(extraEnemies[ei], extraDmgFuse, attacker);
+                        showDamageFloat(extraEnemies[ei].id, extraDmgFuse, false);
+                        addLog('  额外攻击 ' + extraEnemies[ei].name + '，造成 ' + extraDmgFuse + ' 伤害', 'damage');
+                    }
+                }
+                // 升华6阶：释放后为诺亚恢复10%最大血量
+                if ((attacker.ascensionLevel || 0) >= 6) {
+                    var healFuse = Math.floor(attacker.maxHp * 0.10);
+                    attacker.hp = Math.min(attacker.maxHp, attacker.hp + healFuse);
+                    showDamageFloat(attacker.id, '+' + healFuse + 'HP', false);
+                    addLog(attacker.name + '【怒火·极】恢复 ' + healFuse + ' HP', 'buff');
+                }
+                // 升华4阶：释放后保留1层怒火
+                if ((attacker.ascensionLevel || 0) >= 4) {
+                    attacker.angerStacks = 1;
+                    addLog(attacker.name + '【怒火永燃】释放后保留1层怒火', 'buff');
+                } else {
+                    attacker.angerStacks = 0;
+                }
+                applyFortitudeDamage(attacker, target, 3);
             } else {
                 var result = calcDamage(attacker, skill, target, heads);
                 applyDamage(target, result.dmg, attacker);
@@ -12321,8 +13240,9 @@
                 else if (result.resistRate < 0) logText += '（克制+' + Math.round(-result.resistRate*100) + '%）';
                 addLog(logText, 'damage');
                 showDamageFloat(target.id, result.dmg, result.isCrit);
-                target.fortitude = Math.max(0, target.fortitude - 3);
-                if (target.fortitude <= 0) { var bd = Math.floor(result.dmg*0.2); applyDamage(target, bd, attacker); addLog(target.name + ' 坚韧破裂 +' + bd, 'damage'); }
+                // 审判之锤和最终裁决的削韧在applyTalentAfterDamage中处理
+                var baseFortDmgSingle = (attacker.charId === 'char_104' && (skill.name === '审判之锤' || skill.name === '最终裁决')) ? 0 : 3;
+                applyFortitudeDamage(attacker, target, baseFortDmgSingle);
             }
             // 理智变化：攻击后根据结果调整理智（击中敌人+2，未能攻击或被攻击-2）
             applySanityAfterSkill(attacker, skill, heads);
@@ -12412,15 +13332,20 @@
                     if (mods[i].id === 'asc_002_1') { finalStacks += 1; break; }
                 }
             }
+            // 升华2阶：灼烧持续时间+1回合
+            var burnTurns = 2;
+            if (attacker && attacker.charId === 'char_002' && (attacker.ascensionLevel || 0) >= 2) {
+                burnTurns = 3;
+            }
             if (!target.debuffs) target.debuffs = [];
             var burn = target.debuffs.find(function(d) { return d.name === '灼烧'; });
             var dotDmg = attacker ? attacker.atk * 0.15 : 10;
             if (burn) {
                 burn.stacks = (burn.stacks || 0) + finalStacks;
                 burn.dotDmg = (burn.stacks || 1) * dotDmg;
-                burn.turns = Math.max(burn.turns, 2);
+                burn.turns = Math.max(burn.turns, burnTurns);
             } else {
-                target.debuffs.push({ name: '灼烧', stacks: finalStacks, icon: '🔥', dot: true, dotDmg: finalStacks * dotDmg, turns: 2 });
+                target.debuffs.push({ name: '灼烧', stacks: finalStacks, icon: '🔥', dot: true, dotDmg: finalStacks * dotDmg, turns: burnTurns });
             }
         }
 
@@ -12455,7 +13380,7 @@
             // 升格模块：asc_103_1 缓行 - 减速额外+1
             if (attacker && attacker.charId === 'char_103') {
                 var mods = getCharacterAscensionModules('char_103');
-                var ascLevel = attacker.ascensionLevel || 0;
+                var ascLevel = attacker.ascension || 0;
                 for (var i = 0; i < Math.min(ascLevel, mods.length); i++) {
                     if (mods[i].id === 'asc_103_1') { finalAmount += 1; break; }
                 }
@@ -12467,7 +13392,7 @@
             // 升格模块：asc_103_3 凝滞 - 20%概率跳过行动
             if (attacker && attacker.charId === 'char_103') {
                 var mods2 = getCharacterAscensionModules('char_103');
-                var asc2 = attacker.ascensionLevel || 0;
+                var asc2 = attacker.ascension || 0;
                 for (var j = 0; j < Math.min(asc2, mods2.length); j++) {
                     if (mods2[j].id === 'asc_103_3' && Math.random() < 0.2) {
                         if (!target.debuffs) target.debuffs = [];
@@ -12478,7 +13403,336 @@
                 }
             }
         }
+        
+        // ==================== 诺亚 - 「世界」之键·圣愚改 怒火系统 ====================
 
+        // 添加怒火层数，达到5层时触发以怒焚融冰原
+        function addAngerStack(noah, attacker) {
+            if (!noah || !noah.alive) return;
+            if (!noah.angerStacks) noah.angerStacks = 0;
+
+            var gained = 1;
+
+            // 升华2阶：受带灼烧的敌人攻击时额外+1
+            if ((noah.ascensionLevel || 0) >= 2 && attacker) {
+                var attackerHasBurn = attacker.debuffs && attacker.debuffs.find(function(d) { return d.name === '灼烧' && (d.stacks || 0) > 0; });
+                if (attackerHasBurn) {
+                    gained = 2;
+                    addLog(noah.name + '【怒火连携】受灼烧敌人攻击，额外获得1层怒火', 'buff');
+                }
+            }
+
+            noah.angerStacks += gained;
+            showDamageFloat(noah.id, '怒火+' + gained + '（' + noah.angerStacks + '/5）', false);
+            addLog(noah.name + ' 获得 ' + gained + ' 层怒火（当前' + noah.angerStacks + '层）', 'buff');
+
+            // 达到5层触发以怒焚融冰原
+            if (noah.angerStacks >= 5) {
+                // 升华4阶：释放后保留1层
+                var keepStacks = ((noah.ascensionLevel || 0) >= 4) ? 1 : 0;
+                noah.angerStacks = keepStacks;
+                triggerAngerFuse(noah);
+            }
+        }
+
+        // 触发以怒焚融冰原（天赋自动释放）
+        function triggerAngerFuse(noah) {
+            if (!noah || !noah.alive) return;
+
+            // 找目标：血量最多的敌人，优先精英
+            var aliveEnemies = battle.enemies.filter(function(e) { return e.alive; });
+            if (aliveEnemies.length === 0) return;
+
+            // 优先选精英（isElite标记），否则选血量最多的
+            var elites = aliveEnemies.filter(function(e) { return e.isElite; });
+            var target;
+            if (elites.length > 0) {
+                target = elites.reduce(function(a, b) { return a.hp > b.hp ? a : b; });
+            } else {
+                target = aliveEnemies.reduce(function(a, b) { return a.hp > b.hp ? a : b; });
+            }
+
+            addLog('⚡ ' + noah.name + '【以怒焚融冰原】怒火爆发！', 'buff');
+
+            // 基础伤害：诺亚最大血量的30%
+            // 升格模块二：记录失血百分比作为最终伤害加成（最高100%）
+            var baseDmg = Math.floor(noah.maxHp * 0.30);
+            var dmgBonus = 1.0;
+            if (noah._hpLossPercent) {
+                dmgBonus = 1.0 + Math.min(1.0, noah._hpLossPercent);
+                addLog('  升格模块二：失血加成 +' + Math.round(noah._hpLossPercent * 100) + '%', 'buff');
+                noah._hpLossPercent = 0; // 释放后清空
+            }
+            var finalDmg = Math.floor(baseDmg * dmgBonus);
+
+            // 对主目标造成伤害（绕过护盾检测，直接减HP，体现"愤怒"伤害）
+            target.hp = Math.max(0, target.hp - finalDmg);
+            if (target.hp <= 0) target.alive = false;
+            showDamageFloat(target.id, finalDmg, false);
+            addLog(noah.name + '【以怒焚融冰原】对 ' + target.name + ' 造成 ' + finalDmg + ' 伤害', 'damage');
+
+            // 每投出一个正面额外攻击一名敌人（战斗中自动释放：模拟额外1次攻击）
+            var extraTargets = aliveEnemies.filter(function(e) { return e.alive && e.id !== target.id; });
+            if (extraTargets.length > 0) {
+                var extraTarget = extraTargets[Math.floor(Math.random() * extraTargets.length)];
+                var extraDmg = Math.floor(finalDmg * 0.5); // 额外攻击为主伤害50%
+                extraTarget.hp = Math.max(0, extraTarget.hp - extraDmg);
+                if (extraTarget.hp <= 0) extraTarget.alive = false;
+                showDamageFloat(extraTarget.id, extraDmg, false);
+                addLog('  额外波及 ' + extraTarget.name + '，造成 ' + extraDmg + ' 伤害', 'damage');
+            }
+
+            // 升华6阶：释放后为诺亚恢复10%最大血量
+            if ((noah.ascensionLevel || 0) >= 6) {
+                var healAmt = Math.floor(noah.maxHp * 0.10);
+                noah.hp = Math.min(noah.maxHp, noah.hp + healAmt);
+                showDamageFloat(noah.id, '+' + healAmt + 'HP', false);
+                addLog(noah.name + '【怒火·极】释放后恢复 ' + healAmt + ' HP', 'buff');
+            }
+
+            // 升格模块三：释放时使所有角色获得诺亚10%HP的护盾
+            if (noah.ascension >= 3) {
+                var noahMods = getCharacterAscensionModules(noah.charId) || [];
+                if (noahMods[2] && noahMods[2].id === 'asc_007_3') {
+                    var shieldVal = Math.floor(noah.maxHp * 0.10);
+                    battle.allies.forEach(function(ally) {
+                        if (ally.alive) {
+                            ally.shield = (ally.shield || 0) + shieldVal;
+                            if (!ally.buffs) ally.buffs = [];
+                            ally.buffs.push({ name:'怒焰护盾', icon:'🔥', turns:2, type:'shield', shieldVal: shieldVal });
+                        }
+                    });
+                    addLog(noah.name + '【怒火护盾】全队获得 ' + shieldVal + ' 护盾', 'buff');
+                }
+            }
+
+            renderBattle();
+        }
+
+        // ==================== 不秋草 - 宝具·七重竹 系统 ====================
+        
+        // 触发打叶声（核心天赋机制）
+        function triggerDaYeSheng(triggerChar, triggerSkill, triggerDefender) {
+            // 找到不秋草
+            var buQiuCao = battle.allies.find(function(a) { return a.alive && a.charId === 'char_006'; });
+            if (!buQiuCao) return;
+            
+            // 升华1阶：打叶声次数+1（原2次→3次）
+            var baseCount = 2;
+            if ((buQiuCao.ascensionLevel || 0) >= 1) baseCount = 3;
+            
+            // 执行打叶声
+            for (var i = 0; i < baseCount; i++) {
+                applyDaYeSheng(buQiuCao);
+            }
+        }
+        
+        // 执行一次打叶声
+        function applyDaYeSheng(buQiuCao) {
+            // 找到血量最低的敌人
+            var lowestHpEnemy = null;
+            var lowestHp = Infinity;
+            for (var i = 0; i < battle.enemies.length; i++) {
+                var e = battle.enemies[i];
+                if (e.alive && e.hp < lowestHp) {
+                    lowestHp = e.hp;
+                    lowestHpEnemy = e;
+                }
+            }
+            if (!lowestHpEnemy) return;
+            
+            // 打叶声伤害：攻击力20%
+            var baseDmg = Math.floor(buQiuCao.atk * 0.20);
+            // 不秋草升格模块三 星名·天伤星：速度≥125时倍率+5%
+            if (buQiuCao.ascension >= 3 && buQiuCao.speed >= 125) {
+                baseDmg = Math.floor(buQiuCao.atk * 0.25);
+            }
+            
+            // 升华4阶：落竹≥5时伤害+15%（暂不实现，因为是累积效果）
+            
+            // 升华6阶：理智45时无视15%防御
+            if ((buQiuCao.ascensionLevel || 0) >= 6 && buQiuCao.sanity >= 45) {
+                var ignoreDef = Math.floor(lowestHpEnemy.def * 0.15);
+                lowestHpEnemy.def = Math.max(0, lowestHpEnemy.def - ignoreDef);
+            }
+            
+            // 施加伤害
+            applyDamage(lowestHpEnemy, baseDmg, buQiuCao);
+            showDamageFloat(lowestHpEnemy.id, baseDmg, false);
+            addLog(buQiuCao.name + '【打叶声】对' + lowestHpEnemy.name + '造成' + baseDmg + '伤害', 'damage');
+            
+            // 升华2阶：施加破甲debuff
+            if ((buQiuCao.ascensionLevel || 0) >= 2) {
+                if (!lowestHpEnemy.debuffs) lowestHpEnemy.debuffs = [];
+                var poJiaDebuff = lowestHpEnemy.debuffs.find(function(d) { return d.name === '破甲'; });
+                var defReduction = 0.01; // 每层-1%
+                if (poJiaDebuff) {
+                    poJiaDebuff.stacks = Math.min(50, (poJiaDebuff.stacks || 0) + 1);
+                    poJiaDebuff.turns = 2;
+                    poJiaDebuff.defReduce = poJiaDebuff.stacks * defReduction;
+                } else {
+                    lowestHpEnemy.debuffs.push({
+                        name: '破甲',
+                        stacks: 1,
+                        icon: '🎋',
+                        turns: 2,
+                        defReduce: defReduction
+                    });
+                }
+            }
+            
+            // 不秋草速度+1
+            buQiuCao.speed += 1;
+            addLog(buQiuCao.name + ' 速度+1（打叶声）', 'buff');
+            
+            // 添加落竹层数
+            addLuoZhu(buQiuCao);
+        }
+        
+        // 添加落竹层数
+        function addLuoZhu(buQiuCao) {
+            if (!buQiuCao.luoZhuStacks) buQiuCao.luoZhuStacks = 0;
+            
+            var luoZhuMax = 7;
+            // 升华2阶：落竹上限+3
+            if ((buQiuCao.ascensionLevel || 0) >= 2) luoZhuMax = 10;
+            
+            // 先检查是否超过7层（升格模块一 雨后春生需要在加1之前检查）
+            var mods = getCharacterAscensionModules('char_006');
+            if (buQiuCao.ascension >= 1 && mods[0] && mods[0].id === 'asc_006_1') {
+                if (buQiuCao.luoZhuStacks >= 7) {
+                    var clearCount = 3;
+                    addLog(buQiuCao.name + '【雨后春生】落竹超过7层，清空并触发' + clearCount + '次打叶声', 'buff');
+                    buQiuCao.luoZhuStacks = 0;
+                    
+                    // 执行不获得落竹的打叶声
+                    for (var i = 0; i < clearCount; i++) {
+                        applyDaYeShengNoLuoZhu(buQiuCao);
+                    }
+                    // 理智回复仍然执行
+                    var sanityGain = 2;
+                    if ((buQiuCao.ascensionLevel || 0) >= 2) sanityGain += 1;
+                    sanityGain += 2; // 升格模块一额外+2
+                    buQiuCao.sanity = Math.min(45, (buQiuCao.sanity || 0) + sanityGain);
+                    addLog(buQiuCao.name + ' 理智+' + sanityGain + '（落竹）', 'buff');
+                    return;
+                }
+            }
+            
+            buQiuCao.luoZhuStacks = Math.min(luoZhuMax, buQiuCao.luoZhuStacks + 1);
+            
+            // 计算理智回复：基础2 + 升华2阶+1 + 升格模块一+2
+            var sanityGain = 2;
+            if ((buQiuCao.ascensionLevel || 0) >= 2) sanityGain += 1;
+            // 升格模块一 雨后春生：获得落竹时回复2点理智
+            var mods = getCharacterAscensionModules('char_006');
+            if (buQiuCao.ascension >= 1 && mods[0] && mods[0].id === 'asc_006_1') sanityGain += 2;
+            
+            buQiuCao.sanity = Math.min(45, (buQiuCao.sanity || 0) + sanityGain);
+            addLog(buQiuCao.name + ' 理智+' + sanityGain + '（落竹）', 'buff');
+            
+            // 升格模块三 星名·天伤星：首次到达45理智时获得一次理智减少免疫
+            if (buQiuCao.ascension >= 3 && buQiuCao.sanity >= 45 && !buQiuCao._sanityImmuneOnceUsed) {
+                buQiuCao._sanityImmuneOnce = true;
+                buQiuCao._sanityImmuneOnceUsed = true; // 每场战斗限一次
+                addLog(buQiuCao.name + '【星名·天伤星】理智达到45，获得理智减少免疫！', 'buff');
+            }
+            
+            addLog(buQiuCao.name + ' 落竹+' + buQiuCao.luoZhuStacks + '/' + luoZhuMax, 'buff');
+        }
+        
+        // 执行一次不获得落竹的打叶声（用于落竹清空时）
+        function applyDaYeShengNoLuoZhu(buQiuCao) {
+            // 找到血量最低的敌人
+            var lowestHpEnemy = null;
+            var lowestHp = Infinity;
+            for (var i = 0; i < battle.enemies.length; i++) {
+                var e = battle.enemies[i];
+                if (e.alive && e.hp < lowestHp) {
+                    lowestHp = e.hp;
+                    lowestHpEnemy = e;
+                }
+            }
+            if (!lowestHpEnemy) return;
+            
+            // 打叶声伤害：攻击力20%
+            var baseDmg = Math.floor(buQiuCao.atk * 0.20);
+            // 不秋草升格模块三 星名·天伤星：速度≥125时倍率+5%
+            if (buQiuCao.ascension >= 3 && buQiuCao.speed >= 125) {
+                baseDmg = Math.floor(buQiuCao.atk * 0.25);
+            }
+            
+            // 升华6阶：理智45时无视15%防御
+            if ((buQiuCao.ascensionLevel || 0) >= 6 && buQiuCao.sanity >= 45) {
+                var ignoreDef = Math.floor(lowestHpEnemy.def * 0.15);
+                lowestHpEnemy.def = Math.max(0, lowestHpEnemy.def - ignoreDef);
+            }
+            
+            applyDamage(lowestHpEnemy, baseDmg, buQiuCao);
+            showDamageFloat(lowestHpEnemy.id, baseDmg, false);
+            addLog(buQiuCao.name + '【打叶声】对' + lowestHpEnemy.name + '造成' + baseDmg + '伤害', 'damage');
+        }
+        
+        // 理智减少时检查升格模块三 星名·天伤星免疫（返回true表示已消耗免疫，本次不减）
+        function checkSanityImmuneBeforeReduce(unit, amount) {
+            if (unit.charId === 'char_006' && unit.ascension >= 3 && unit._sanityImmuneOnce) {
+                unit._sanityImmuneOnce = false;
+                addLog(unit.name + '【星名·天伤星】理智减少免疫生效！', 'buff');
+                return true;
+            }
+            return false;
+        }
+        
+        // 酒过三巡效果
+        function applyJiuGuoSanXun(buQiuCao) {
+            // 理智减少10点
+            // 升华6阶：首次将理智降至0以下时，保留1点理智
+            // 升格模块三 星名·天伤星：首次到达45理智获得一次理智减少免疫
+            var newSanity = (buQiuCao.sanity || 0) - 10;
+            // 升格模块三 星名·天伤星：免疫一次理智减少
+            if (buQiuCao.ascension >= 3 && buQiuCao._sanityImmuneOnce) {
+                buQiuCao._sanityImmuneOnce = false;
+                newSanity = buQiuCao.sanity || 0; // 不减少理智
+                addLog(buQiuCao.name + '【星名·天伤星】理智减少免疫生效！', 'buff');
+            }
+            if ((buQiuCao.ascensionLevel || 0) >= 6 && newSanity < 0 && !buQiuCao._sanityImmuneUsed) {
+                buQiuCao._sanityImmuneUsed = true;
+                newSanity = 1; // 保留1点理智
+                addLog(buQiuCao.name + '【星名·天伤星】理智归零保护！保留1点理智', 'buff');
+            }
+            buQiuCao.sanity = Math.max(-45, newSanity);
+            addLog(buQiuCao.name + ' 理智-10（酒过三巡）', 'buff');
+            
+            // 立即使用三次打叶声
+            for (var i = 0; i < 3; i++) {
+                applyDaYeShengNoLuoZhu(buQiuCao);
+            }
+            
+            // 升华4阶：为所有队友恢复5%最大生命值并加攻10%
+            if ((buQiuCao.ascensionLevel || 0) >= 4) {
+                for (var j = 0; j < battle.allies.length; j++) {
+                    var ally = battle.allies[j];
+                    if (!ally.alive) continue;
+                    
+                    // 恢复5%最大生命值
+                    var healAmt = Math.floor(ally.maxHp * 0.05);
+                    ally.hp = Math.min(ally.maxHp, ally.hp + healAmt);
+                    if (healAmt > 0) {
+                        showDamageFloat(ally.id, '+' + healAmt, false);
+                        addLog(ally.name + ' 恢复' + healAmt + 'HP（酒过三巡）', 'heal');
+                    }
+                    
+                    // 攻击力永久+10%
+                    if (!ally.permAtkBonus) ally.permAtkBonus = 0;
+                    ally.permAtkBonus += 0.10;
+                    ally.atk = Math.floor(ally.baseAtk * (1 + ally.permAtkBonus));
+                    addLog(ally.name + ' 攻击力永久+10%（酒过三巡）', 'buff');
+                }
+            }
+        }
+        
+        // ==================== 不秋草 结束 ====================
+        
         // ---- 施加护盾（封装，圣歌升格增强） ----
         function applyShield(caster, target, value) {
             var finalValue = value;
@@ -12521,35 +13775,59 @@
             // Zwei - 拟物派·准备工作：根据已损失血量计算暴击加成
             if (unit.charId === 'char_005') {
                 var lostHpPercent = (unit.maxHp - unit.hp) / unit.maxHp * 100;
-                var critBonus = Math.floor(lostHpPercent / 2); // 每下降2%血量+1%暴击
-                var critDmgBonus = Math.floor(lostHpPercent / 2) * 2; // 每下降2%血量+2%暴伤
+                // 升华1阶：每1.5%损血+1%暴击；否则每2%
+                var divisor = ((unit.ascensionLevel || 0) >= 1) ? 1.5 : 2;
+                var critBonus = Math.floor(lostHpPercent / divisor);
+                var critDmgBonus = Math.floor(lostHpPercent / divisor) * 2;
                 unit.critRate = (unit.critRate || 0.05) + critBonus * 0.01;
                 unit.critDmg = (unit.critDmg || 1.5) + critDmgBonus * 0.01;
             }
             
-            // 霜华 - 凛冬之息：回合开始时若理智≥20则下回合硬币威力+1
-            // 这个在回合开始时处理
+            // 不秋草 - 升华6阶：战斗开始时获得3层落竹
+            if (unit.charId === 'char_006' && (unit.ascensionLevel || 0) >= 6) {
+                unit.luoZhuStacks = 3;
+                addLog(unit.name + '【星名·天伤星】战斗开始，获得3层落竹', 'buff');
+            }
+
+            // 诺亚 - 升华1阶：战斗开始时获得3层怒火
+            if (unit.charId === 'char_007' && (unit.ascensionLevel || 0) >= 1) {
+                unit.angerStacks = 3;
+                addLog(unit.name + '【怒火之种】战斗开始，获得3层怒火', 'buff');
+            }
             
-            // 烬羽 - 燎原之怒：攻击灼烧层数≥4的敌人时额外AOE伤害
-            // 这个在伤害计算后处理
-            
-            // 黯月 - 嫉妒之噬：攻击debuff≥2的目标时基础威力+1
-            // 这个在伤害计算时处理
-            
-            // 圣歌 - 慈悲颂歌：治疗量提升
-            // 这个在治疗时处理
-            
-            // 铁壁 - 贪食壁垒：免伤期间单次伤害上限
-            // 这个在受到伤害时处理
-            
-            // 疾风 - 傲慢之翼：速度高于目标时基础威力+1
-            // 这个在伤害计算时处理
-            
-            // 调和者 - 怠惰之息：速度低于目标时受到伤害降低
-            // 这个在受到伤害时处理
-            
-            // 裁决 - 愤怒之裁：削韧效率提升
-            // 这个在削韧时处理
+            // 罪影特效 - 战斗开始时处理
+            if (unit.shadowEffect) {
+                // 迅刃SR：首回合额外速度+3
+                if (unit.shadowEffect.firstTurnBonus) {
+                    unit.speed += unit.shadowEffect.firstTurnBonus;
+                    unit._firstTurnSpeedBonus = unit.shadowEffect.firstTurnBonus;
+                    addLog(unit.name + '【风之步】首回合速度+' + unit.shadowEffect.firstTurnBonus, 'buff');
+                }
+                // 坚盾SR：防御力+20%
+                if (unit.shadowEffect.defBonusPercent) {
+                    unit.def = Math.floor(unit.def * (1 + unit.shadowEffect.defBonusPercent));
+                    addLog(unit.name + '【不屈意志】防御力+' + Math.round(unit.shadowEffect.defBonusPercent * 100) + '%', 'buff');
+                }
+                // 坚盾R：减伤15%
+                if (unit.shadowEffect.damageReduction) {
+                    unit.dmgReduction = (unit.dmgReduction || 0) + unit.shadowEffect.damageReduction;
+                }
+                // 灵识R：技能基础威力+10%（标记，在calcDamage时处理）
+                // skillPowerBonus 在 calcDamage 中读取
+                // 灵识R：硬币数量+1（标记，在牌库构建后不好补，这里给技能临时+1）
+                if (unit.shadowEffect.coinBonus && unit.skills) {
+                    unit.skills.forEach(function(sk) {
+                        sk.coinCount = (sk.coinCount || 0) + unit.shadowEffect.coinBonus;
+                    });
+                    // 同步到牌库
+                    if (unit.deck) {
+                        unit.deck.forEach(function(card) {
+                            if (card.skill) card.skill.coinCount = (card.skill.coinCount || 0) + unit.shadowEffect.coinBonus;
+                        });
+                    }
+                    addLog(unit.name + '【弱点识破】所有技能硬币+' + unit.shadowEffect.coinBonus, 'buff');
+                }
+            }
         }
         
         // 应用天赋效果 - 回合开始时
@@ -12566,14 +13844,71 @@
                 if ((unit.sanity || 0) <= -15) {
                     applyBuff(unit, 'speedBonus', 2, 1, '嫉妒之噬');
                 }
+                // 升华6阶：闪避成功后下回合基础威力+2
+                if (unit._dodgedLastRound && (unit.ascensionLevel || 0) >= 6) {
+                    unit._dodgeAscBonus = (unit._dodgeAscBonus || 0) + 2;
+                    unit._dodgedLastRound = false;
+                    addLog(unit.name + '【升华6阶·暗影】闪避奖励：本回合基础威力+2', 'buff');
+                }
+            }
+            
+            // 裁决 - 破韧后效果兑现：速度+3、硬币威力+1
+            if (unit.charId === 'char_104') {
+                if (unit._breakSpeedUp && unit._breakSpeedUp > 0) {
+                    unit.speed = Math.min(unit.speed + unit._breakSpeedUp, 99);
+                    if (!unit.buffs) unit.buffs = [];
+                    unit.buffs.push({ type:'speedBonus', name:'愤怒之裁·速度', speedReduce: -(unit._breakSpeedUp), turns:1 });
+                    addLog(unit.name + '【愤怒之裁】破韧奖励：速度+' + unit._breakSpeedUp, 'buff');
+                    unit._breakSpeedUp = 0;
+                }
+                if (unit._breakCoinPowerUp && unit._breakCoinPowerUp > 0) {
+                    if (!unit.buffs) unit.buffs = [];
+                    unit.buffs.push({ type:'coinPowerBonus', name:'愤怒之裁·硬币', coinPowerBoost: unit._breakCoinPowerUp, turns:1 });
+                    addLog(unit.name + '【愤怒之裁】破韧奖励：硬币威力+' + unit._breakCoinPowerUp, 'buff');
+                    unit._breakCoinPowerUp = 0;
+                }
+            }
+            
+            // 迅刃SR罪影：首回合速度加成，从第2回合起移除
+            if (unit._firstTurnSpeedBonus && battle.turn >= 2) {
+                unit.speed = Math.max(1, unit.speed - unit._firstTurnSpeedBonus);
+                unit._firstTurnSpeedBonus = 0;
+                addLog(unit.name + ' 首回合速度加成消失', 'system');
             }
             
             // 疾风 - 傲慢之翼：每回合首次攻击若硬币全部正面则下回合速度+2
             // 这个在攻击后处理
             
+            // 调和者 - 怠惰均衡：理智在-10到10之间获得3%免伤（升华1阶扩展至-15到15）
+            if (unit.charId === 'char_103') {
+                var san103 = unit.sanity || 0;
+                var threshold = ((unit.ascensionLevel || 0) >= 1) ? 15 : 10;
+                if (san103 >= -threshold && san103 <= threshold) {
+                    unit.dmgReduction = (unit.dmgReduction || 0) + 0.03;
+                    if (!unit.buffs) unit.buffs = [];
+                    unit.buffs.push({ name:'怠惰均衡', icon:'⚖️', turns:1, type:'dmgReduction', dmgReduction:0.03 });
+                }
+            }
+            
             // Zwei - 拟物派·准备工作：回合开始时置入1张【将死亡押入枪膛】
             if (unit.charId === 'char_005') {
                 addSpecialCardToDeck(unit, '将死亡押入枪膛');
+            }
+            
+            // 协律SR罪影：每回合恢复8点理智
+            if (unit.shadowEffect && unit.shadowEffect.sanityRegenPerTurn) {
+                unit.sanity = Math.min(45, (unit.sanity || 0) + unit.shadowEffect.sanityRegenPerTurn);
+            }
+            
+            // 持续恢复buff（生生不息等）
+            if (unit.buffs && unit.isAlly) {
+                unit.buffs.forEach(function(b) {
+                    if (b.type === 'regen' && b.regenPercent) {
+                        var regenHp = Math.floor(unit.maxHp * b.regenPercent);
+                        unit.hp = Math.min(unit.maxHp, unit.hp + regenHp);
+                        addLog(unit.name + ' 持续恢复 ' + regenHp + ' HP', 'heal');
+                    }
+                });
             }
         }
         
@@ -12582,7 +13917,8 @@
             var bonusPower = 0;
             var talent = getCharacterTalent(attacker.charId);
             var modules = getCharacterAscensionModules(attacker.charId);
-            var ascLevel = attacker.ascensionLevel || 0;
+            var ascLevel = attacker.ascensionLevel || 0;  // 升华等级（用于升华效果）
+            var modAscLevel = attacker.ascension || 0;     // 升格等级（用于升格模块）
             
             // 霜华 - 凛冬之息：攻击带有霜痕的目标时，每层霜痕使本技能基础威力+1
             if (attacker.charId === 'char_001') {
@@ -12608,10 +13944,7 @@
             if (attacker.charId === 'char_102') {
                 if (attacker.speed > defender.speed) {
                     bonusPower += 1;
-                    // 升格模块 asc_102_1 疾行：速度高于目标时硬币威力+1（简化为基础威力+1）
-                    for (var i = 0; i < Math.min(ascLevel, modules.length); i++) {
-                        if (modules[i].id === 'asc_102_1') { bonusPower += 1; break; }
-                    }
+                    // 升格模块 asc_102_1 疾行：速度高于目标时硬币威力+1（在calcDamage中以coinPow形式处理，这里不重复）
                     // 升华2阶：迅斩额外伤害提升至15%（在具体技能结算时处理，这里+1威力代表）
                 }
             }
@@ -12620,7 +13953,7 @@
             if (attacker.charId === 'char_104') {
                 var isBroken = defender.fortitude !== undefined && defender.fortitude <= 0;
                 if (isBroken) {
-                    for (var j = 0; j < Math.min(ascLevel, modules.length); j++) {
+                    for (var j = 0; j < Math.min(modAscLevel, modules.length); j++) {
                         if (modules[j].id === 'asc_104_2') { attacker._brokenDmgBoost = 0.25; break; }
                     }
                 }
@@ -12650,12 +13983,18 @@
         
         // 应用天赋效果 - 伤害计算后
         function applyTalentAfterDamage(attacker, skill, defender, damage, heads) {
-            // 烬羽 - 燎原之怒：攻击灼烧层数≥4的敌人时，额外对所有敌人造成攻击力50%的伤害
+            // 不秋草 - 宝具·七重竹：队友使用攻击技能后触发打叶声
+            if (skill && skill.type === 'attack' && attacker.isAlly && attacker.charId !== 'char_006') {
+                triggerDaYeSheng(attacker, skill, defender);
+            }
+            
+            // 烬羽 - 燎原之怒：攻击灼烧层数≥4的敌人时，额外对所有敌人造成攻击力50%(升华1阶:75%)的伤害
             if (attacker.charId === 'char_002') {
                 var burn = defender.debuffs ? defender.debuffs.find(function(d) { return d.name === '灼烧'; }) : null;
                 if (burn && (burn.stacks || 0) >= 4) {
-                    var aoeDmg = Math.floor(attacker.atk * 0.5);
-                    addLog(attacker.name + ' 触发【燎原之怒】，对全体敌人造成 ' + aoeDmg + ' 伤害', 'damage');
+                    var aoeMult = ((attacker.ascensionLevel || 0) >= 1) ? 0.75 : 0.50;
+                    var aoeDmg = Math.floor(attacker.atk * aoeMult);
+                    addLog(attacker.name + ' 触发【燎原之怒】，对全体敌人造成 ' + aoeDmg + ' 伤害（' + Math.round(aoeMult*100) + '%ATK）', 'damage');
                     for (var i = 0; i < battle.enemies.length; i++) {
                         if (battle.enemies[i].alive) {
                             applyDamage(battle.enemies[i], aoeDmg, attacker);
@@ -12665,11 +14004,38 @@
                 }
             }
             
+            // 迅刃SSR罪影：施加控制时，额外获得speed×1.5%的暴伤（此次攻击已计算，下次攻击时再触发）
+            // 检测是否施加了控制效果（冰冻、晕眩、减速等）
+            if (attacker.shadowEffect && attacker.shadowEffect.ctrlCritDmgPerSpeed) {
+                var ctrlApplied = defender.debuffs && defender.debuffs.some(function(d) {
+                    return d.name === '冰冻' || d.name === '眩晕' || d.name === '速度降低';
+                });
+                if (ctrlApplied) {
+                    var ctrlBonus = attacker.speed * attacker.shadowEffect.ctrlCritDmgPerSpeed;
+                    attacker.critDmg = (attacker.critDmg || 1.5) + ctrlBonus;
+                    if (!attacker.buffs) attacker.buffs = [];
+                    attacker.buffs.push({ name:'凛冬之锋', icon:'❄️', turns:1, critDmgBonus: ctrlBonus });
+                    addLog(attacker.name + '【凛冬之锋】控制加成：暴伤+' + Math.round(ctrlBonus * 100) + '%', 'buff');
+                }
+            }
+            
+            // 异常SR罪影：50%概率使敌人中毒
+            if (attacker.shadowEffect && attacker.shadowEffect.poisonChance && defender && defender.alive) {
+                if (Math.random() < attacker.shadowEffect.poisonChance) {
+                    if (!defender.debuffs) defender.debuffs = [];
+                    var existPoison = defender.debuffs.find(function(d){ return d.name === '蜜毒'; });
+                    if (!existPoison) {
+                        defender.debuffs.push({ name:'蜜毒', icon:'🍯', turns: attacker.shadowEffect.poisonDuration || 3, poisonPercent: attacker.shadowEffect.poisonDamage || 0.05 });
+                        addLog(defender.name + '【剧毒蔓延】中毒（每回合损失' + Math.round((attacker.shadowEffect.poisonDamage||0.05)*100) + '%HP，' + (attacker.shadowEffect.poisonDuration||3) + '回合）', 'debuff');
+                    }
+                }
+            }
+            
             // 霜华 - 技能效果：霜刃斩施加霜痕1层，冰结领域施加2层
             if (attacker.charId === 'char_001' && skill && defender) {
                 if (skill.name === '霜刃斩') {
                     applyFrostMark(attacker, defender, 1);
-                    addLog(defender.name + ' 获得 ' + (1 + (attacker.ascensionLevel >= 2 ? 1 : 0) + ((getCharacterAscensionModules('char_001').find(function(m){return m.id==='asc_001_1';}) && (attacker.ascensionLevel||0)>=1) ? 1 : 0)) + ' 层霜痕', 'debuff');
+                    addLog(defender.name + ' 获得 ' + (1 + (attacker.ascensionLevel >= 2 ? 1 : 0) + ((getCharacterAscensionModules('char_001').find(function(m){return m.id==='asc_001_1';}) && (attacker.ascension||0)>=1) ? 1 : 0)) + ' 层霜痕', 'debuff');
                 } else if (skill.name === '冰结领域') {
                     // 群攻在 resolveSupport/AOE中处理，这里补充速度降低
                     if (heads > 0) {
@@ -12699,9 +14065,15 @@
                 }
             }
             
-            // 黯月 - 技能效果：毒刃施加中毒，暗影分身施加闪避
-            if (attacker.charId === 'char_003') {
-                if (skill && skill.name === '毒刃') {
+            // 黯月 - 技能效果：毒刃施加中毒，暗影分身施加闪避，暗影突袭施加易伤
+            if (attacker.charId === 'char_003' && skill && defender) {
+                if (skill.name === '暗影突袭' && heads > 0) {
+                    // 基础易伤10%，升华2阶提升至15%
+                    var vulnRate = ((attacker.ascensionLevel || 0) >= 2) ? 0.15 : 0.10;
+                    if (!defender.debuffs) defender.debuffs = [];
+                    defender.debuffs.push({ name: '易伤', icon: '💔', turns: 1, dmgTakenBonus: vulnRate });
+                    addLog(defender.name + ' 下回合受到伤害+' + Math.round(vulnRate * 100) + '%（易伤）', 'debuff');
+                } else if (skill && skill.name === '毒刃') {
                     applyPoisonDebuff(attacker, defender, 1 + heads); // 基础1层+正面数
                     addLog(defender.name + ' 中毒 ' + (1 + heads) + ' 层', 'debuff');
                 } else if (skill && skill.name === '暗影分身') {
@@ -12720,14 +14092,7 @@
                 }
             }
             
-            // 裁决 - 削韧系统：技能使目标破韧后下回合+2威力
-            if (attacker.charId === 'char_104') {
-                var wasBroken = defender.fortitude !== undefined && defender.fortitude <= 0;
-                if (wasBroken) {
-                    attacker._breakPowerUp = (attacker._breakPowerUp || 0) + 2;
-                    addLog(attacker.name + '【裁决】破韧，下回合基础威力+2', 'buff');
-                }
-            }
+            // 裁决 - 削韧系统：破韧效果已在applyFortitudeDamage中处理（包括速度+3、硬币威力+1、基础威力+2）
             
             // 疾风 - 傲慢之翼：每回合首次攻击若硬币全部正面则下回合速度+2
             if (attacker.charId === 'char_102') {
@@ -12751,6 +14116,81 @@
                     }
                 }
             }
+            
+            // 调和者 - 技能效果：平衡打击硬币正面时恢复理智
+            if (attacker.charId === 'char_103' && skill && heads > 0) {
+                if (skill.name === '平衡打击') {
+                    // 基础恢复5点理智，升华2阶提升至8点
+                    var sanityGain = ((attacker.ascensionLevel || 0) >= 2) ? 8 : 5;
+                    attacker.sanity = Math.min(45, (attacker.sanity || 0) + sanityGain);
+                    addLog(attacker.name + ' 理智 +' + sanityGain + '（平衡打击）', 'buff');
+                }
+            }
+            
+            // 铁壁 - 技能效果：盾击施加防御下降，速度降低
+            if (attacker.charId === 'char_101' && skill && defender) {
+                if (skill.name === '盾击') {
+                    // 基础防御降低20%，升华2阶提升至30%
+                    var defDownRate = ((attacker.ascensionLevel || 0) >= 2) ? 0.30 : 0.20;
+                    if (!defender.debuffs) defender.debuffs = [];
+                    defender.debuffs.push({ name: '护甲溶解', icon: '🛡', turns: 2, defReduceAmount: defDownRate });
+                    defender.def = Math.floor(defender.def * (1 - defDownRate));
+                    addLog(defender.name + ' 防御力下降' + Math.round(defDownRate * 100) + '%（护甲溶解）', 'debuff');
+                    // 硬币正面使目标速度-3
+                    if (heads > 0) {
+                        defender.speed = Math.max(1, defender.speed - 3);
+                        if (!defender.debuffs) defender.debuffs = [];
+                        defender.debuffs.push({ name: '速度降低', icon: '🐌', turns: 1, speedReduce: 3 });
+                        addLog(defender.name + ' 速度-3（盾击）', 'debuff');
+                    }
+                }
+            }
+            
+            // 裁决 - 技能效果：审判之锤和最终裁决的削韧处理
+            if (attacker.charId === 'char_104' && skill && defender && defender.alive) {
+                // 审判之锤：基础削韧8点，升华2阶提升至12点，每枚硬币正面额外削3点
+                if (skill.name === '审判之锤') {
+                    // 基础削韧：8点，升华2阶12点
+                    var judgmentBaseFort = ((attacker.ascensionLevel || 0) >= 2) ? 12 : 8;
+                    // 每枚硬币正面额外削3点
+                    var judgmentCoinFort = heads * 3;
+                    var totalJudgmentFort = judgmentBaseFort + judgmentCoinFort;
+                    if (totalJudgmentFort > 0) {
+                        defender.fortitude = Math.max(0, defender.fortitude - totalJudgmentFort);
+                        addLog(defender.name + ' 坚韧值 -' + totalJudgmentFort + '（审判之锤）', 'damage');
+                        // 检查破韧
+                        if (defender.fortitude <= 0) {
+                            var breakDmg = Math.floor((defender.maxHp || 100) * 0.05);
+                            defender.hp = Math.max(0, defender.hp - breakDmg);
+                            if (defender.hp <= 0) defender.alive = false;
+                            showDamageFloat(defender.id, breakDmg, false);
+                            addLog(defender.name + ' 坚韧破裂！受到 ' + breakDmg + ' 固定伤害', 'damage');
+                        }
+                    }
+                }
+                
+                // 最终裁决：破韧时追加伤害200%攻击力，升华4阶提升至250%
+                if (skill.name === '最终裁决') {
+                    // 先记录当前坚韧值用于判断是否破韧
+                    var fortBefore = defender.fortitude;
+                    // 基础削韧18点
+                    var verdictBaseFort = 18;
+                    defender.fortitude = Math.max(0, defender.fortitude - verdictBaseFort);
+                    addLog(defender.name + ' 坚韧值 -' + verdictBaseFort + '（最终裁决）', 'damage');
+                    
+                    // 检查是否破韧
+                    if (fortBefore > 0 && defender.fortitude <= 0) {
+                        // 破韧追加伤害：200%攻击力，升华4阶250%
+                        var breakDmgMult = ((attacker.ascensionLevel || 0) >= 4) ? 2.50 : 2.00;
+                        // 每枚硬币正面追加伤害+25%攻击力
+                        var breakDmgExtra = heads * attacker.atk * 0.25;
+                        var totalBreakDmg = Math.floor(attacker.atk * breakDmgMult + breakDmgExtra);
+                        applyDamage(defender, totalBreakDmg, attacker);
+                        showDamageFloat(defender.id, totalBreakDmg, false);
+                        addLog(defender.name + ' 破韧追加伤害 ' + totalBreakDmg + '（最终裁决）', 'damage');
+                    }
+                }
+            }
         }
         
         // 应用天赋效果 - 受到伤害时
@@ -12758,6 +14198,11 @@
             // 铁壁 - 贪食壁垒：免伤效果生效期间，受到的单次伤害不超过自身最大HP的20%
             if (defender.charId === 'char_101') {
                 var dr = defender.dmgReduction || 0;
+                // 天赋：每1%免伤使基础防御+1（以减伤形式体现）
+                var drPct = Math.round(dr * 100);
+                if (drPct > 0) {
+                    damage = Math.max(0, damage - drPct);
+                }
                 if (dr > 0) {
                     var maxDmg = defender.maxHp * 0.2;
                     if (damage > maxDmg) {
@@ -12825,13 +14270,28 @@
             // 黯月 - 升格 asc_003_2 暗影：闪避成功时（闪避在伤害前判断）
             // 这里只处理闪避后的威力增益（标记是否发生过闪避）
             
+            // 闪避判定（黯月暗影分身buff）
+            if (defender.evasion && defender.evasion > 0 && Math.random() < defender.evasion) {
+                addLog(defender.name + ' 闪避了攻击！', 'buff');
+                // 黯月升华6阶：闪避成功后标记
+                if (defender.charId === 'char_003') {
+                    defender._dodgedLastRound = true;
+                }
+                return 0; // 伤害归零
+            }
+
+            // 诺亚天赋：受到的伤害减少50%
+            if (defender.charId === 'char_007') {
+                damage = Math.floor(damage * 0.50);
+            }
+            
             return damage;
         }
         
         // 应用升格模块效果 - 战斗开始时
         function applyAscensionModuleOnBattleStart(unit) {
             var modules = getCharacterAscensionModules(unit.charId);
-            var ascLevel = unit.ascensionLevel || 0;
+            var ascLevel = unit.ascension || 0;
             
             for (var i = 0; i < Math.min(ascLevel, modules.length); i++) {
                 var mod = modules[i];
@@ -12864,6 +14324,14 @@
                 // 铁壁 asc_101_3 铁壁：HP<30%时自动触发（游戏开始时注册，实际触发在受伤时）
                 // 疾风 asc_102_1 疾行：被动，在伤害计算时处理
                 // 调和者 asc_103_2 静心：回合开始时处理
+                
+                // 不秋草 asc_006_2 穿林风：战斗开始立即使用3次打叶声
+                if (mod.id === 'asc_006_2') {
+                    addLog(unit.name + '【穿林风】开局触发3次打叶声', 'buff');
+                    for (var k = 0; k < 3; k++) {
+                        applyDaYeShengNoLuoZhu(unit);
+                    }
+                }
             }
         }
         
@@ -12878,7 +14346,7 @@
         // 应用升格模块效果 - 击杀敌人时
         function applyAscensionModuleOnKill(killer, victim) {
             var modules = getCharacterAscensionModules(killer.charId);
-            var ascLevel = killer.ascensionLevel || 0;
+            var ascLevel = killer.ascension || 0;  // 升格等级
             
             for (var i = 0; i < Math.min(ascLevel, modules.length); i++) {
                 var mod = modules[i];
@@ -12916,16 +14384,38 @@
                     killer._extraTurnAfterKill = true;
                     addLog(killer.name + '【连斩】将获得1次额外行动！', 'buff');
                 }
-                
-                // 裁决 asc_104_3 裁决：使敌人破韧后自身下回合+2基础威力（这里是击杀时可能触发的增益）
-                // 实际在破韧时处理
             }
+            
+            // 烬羽升华6阶：敌人死亡时，其灼烧层数×30%ATK真实伤害爆炸
+            if (killer.charId === 'char_002' && (killer.ascensionLevel || 0) >= 6) {
+                var burnOnDeath = victim.debuffs ? victim.debuffs.find(function(d) { return d.name === '灼烧'; }) : null;
+                if (burnOnDeath && (burnOnDeath.stacks || 0) > 0) {
+                    var explosionDmg = Math.floor(killer.atk * 0.30 * burnOnDeath.stacks);
+                    addLog(killer.name + '【升华6阶·焚灭】' + victim.name + '死亡，灼烧爆炸造成 ' + explosionDmg + ' 真实伤害！', 'damage');
+                    var aliveEs = battle.enemies.filter(function(e) { return e.alive; });
+                    aliveEs.forEach(function(e) {
+                        e.hp = Math.max(0, e.hp - explosionDmg);
+                        if (e.hp <= 0) e.alive = false;
+                        showDamageFloat(e.id, explosionDmg, false);
+                    });
+                }
+            }
+            
+            // 倾衡SR罪影：击杀时恢复10%HP
+            if (killer.shadowEffect && killer.shadowEffect.killHealPercent) {
+                var shadowKillHeal = Math.floor(killer.maxHp * killer.shadowEffect.killHealPercent);
+                killer.hp = Math.min(killer.maxHp, killer.hp + shadowKillHeal);
+                addLog(killer.name + '【罪加一等】击杀恢复 ' + shadowKillHeal + ' HP', 'heal');
+            }
+            
+            // 裁决 asc_104_3 裁决：使敌人破韧后自身下回合+2基础威力（这里是击杀时可能触发的增益）
+            // 实际在破韧时处理
         }
         
         // 应用升格模块效果 - 消耗血量时
         function applyAscensionModuleOnHpConsume(unit, consumedHp) {
             var modules = getCharacterAscensionModules(unit.charId);
-            var ascLevel = unit.ascensionLevel || 0;
+            var ascLevel = unit.ascension || 0;  // 升格等级
             
             for (var i = 0; i < Math.min(ascLevel, modules.length); i++) {
                 var mod = modules[i];
@@ -13064,15 +14554,110 @@
             return enhancedSkill;
         }
         
+        // 统一削韧函数：处理裁决天赋/升格和罪影加成
+        function applyFortitudeDamage(attacker, target, baseFortDmg) {
+            var fortDmg = baseFortDmg;
+            // 裁决天赋：愤怒之裁 - 坚韧值低于50%时削韧效率+15%
+            if (attacker && attacker.charId === 'char_104') {
+                var maxFort = target.maxFortitude || target.fortitude || 1;
+                if (target.fortitude / maxFort < 0.50) {
+                    fortDmg = Math.ceil(fortDmg * 1.15);
+                }
+                // 裁决升格：碎甲（asc_104_1）削韧效率+20%
+                var mods104 = getCharacterAscensionModules('char_104');
+                var asc104 = attacker.ascensionLevel || 0;
+                for (var mi = 0; mi < Math.min(asc104, mods104.length); mi++) {
+                    if (mods104[mi].id === 'asc_104_1') { fortDmg = Math.ceil(fortDmg * 1.20); break; }
+                }
+            }
+            // 倾衡SSR罪影：削韧效果+30%
+            if (attacker && attacker.shadowEffect && attacker.shadowEffect.breakEfficiencyBonus) {
+                fortDmg = Math.ceil(fortDmg * (1 + attacker.shadowEffect.breakEfficiencyBonus));
+            }
+            var wasBroken = target.fortitude <= 0;
+            target.fortitude = Math.max(0, target.fortitude - fortDmg);
+            var justBroken = !wasBroken && target.fortitude <= 0;
+            if (justBroken) {
+                var breakDmg = Math.floor((target.maxHp || 100) * 0.05);
+                target.hp = Math.max(0, target.hp - breakDmg);
+                if (target.hp <= 0) target.alive = false;
+                showDamageFloat(target.id, breakDmg, false);
+                addLog(target.name + ' 坚韧破裂！受到 ' + breakDmg + ' 固定伤害', 'damage');
+                // 裁决天赋：破韧后下回合速度+3，所有技能硬币威力+1
+                if (attacker && attacker.charId === 'char_104') {
+                    attacker._breakSpeedUp = (attacker._breakSpeedUp || 0) + 3;
+                    attacker._breakCoinPowerUp = (attacker._breakCoinPowerUp || 0) + 1;
+                    attacker._breakPowerUp = (attacker._breakPowerUp || 0) + 2;
+                    addLog(attacker.name + '【愤怒之裁】破韧！下回合速度+3，硬币威力+1，基础威力+2', 'buff');
+                }
+                // 倾衡SSR罪影：破韧后下次攻击伤害+25%
+                if (attacker && attacker.shadowEffect && attacker.shadowEffect.postBreakDmgBonus) {
+                    attacker._postBreakDmgBonus = (attacker.shadowEffect.postBreakDmgBonus || 0.25);
+                    addLog(attacker.name + '【终局裁决】破韧奖励：下次攻击伤害+25%', 'buff');
+                }
+            }
+        }
+        
         function calcDamage(attacker, skill, defender, heads) {
             // 基础倍率 = (基础威力 + 硬币正面 × 硬币威力) / 10
-            var totalPower = skill.basePower + skill.coinPower * heads;
+            var basePow = skill.basePower;
+            var coinPow = skill.coinPower;
+            // 迅斩硬币正面额外伤害倍率：基础10%，升华2阶15%
+            var xunzhanBonusPerHead = 0.10;
+            if (attacker.charId === 'char_102' && skill.name === '迅斩' && (attacker.ascensionLevel || 0) >= 2) {
+                xunzhanBonusPerHead = 0.15;
+            }
+            
+            // 黯月升华6阶：闪避后基础威力+2
+            if (attacker.charId === 'char_003' && attacker._dodgeAscBonus) {
+                basePow += attacker._dodgeAscBonus;
+                attacker._dodgeAscBonus = 0;
+            }
+            // 黯月升华1阶：debuff≥2时额外硬币威力+1（在applyTalentOnDamageCalc基础上）
+            if (attacker.charId === 'char_003' && (attacker.ascensionLevel || 0) >= 1) {
+                var debuffCount003 = defender.debuffs ? defender.debuffs.length : 0;
+                if (debuffCount003 >= 2) coinPow += 1;
+            }
+            // 疾风升华1阶：速度高于目标时硬币威力+1
+            if (attacker.charId === 'char_102' && attacker.speed > defender.speed && (attacker.ascensionLevel || 0) >= 1) {
+                coinPow += 1;
+            }
+            // 迅刃R罪影：25%概率硬币威力+1
+            if (attacker.shadowEffect && attacker.shadowEffect.coinPowerUpChance) {
+                if (Math.random() < attacker.shadowEffect.coinPowerUpChance) {
+                    coinPow += 1;
+                }
+            }
+            
+            var totalPower = basePow + coinPow * heads;
             
             // 应用天赋加成到基础威力
             var talentBonus = applyTalentOnDamageCalc(attacker, skill, defender, totalPower);
             totalPower += talentBonus;
             
+            // 灵识R罪影：技能基础威力+10%
+            if (attacker.shadowEffect && attacker.shadowEffect.skillPowerBonus) {
+                totalPower = Math.ceil(totalPower * (1 + attacker.shadowEffect.skillPowerBonus));
+            }
+            // 灵识SSR罪影：目标每层灼烧基础威力+1（上限+3）
+            if (attacker.shadowEffect && attacker.shadowEffect.burnStackPowerBonus) {
+                var burnSt = defender.debuffs ? defender.debuffs.find(function(d){ return d.name === '灼烧'; }) : null;
+                if (burnSt) {
+                    totalPower += Math.min(attacker.shadowEffect.burnStackPowerCap || 3, (burnSt.stacks || 0) * attacker.shadowEffect.burnStackPowerBonus);
+                }
+            }
+            
             var baseMultiplier = totalPower / 10;
+            
+            // 傲慢之刃：速度差额外伤害（基础2%，升华4阶3%）
+            var speedDiffBonus = 0;
+            if (attacker.charId === 'char_102' && skill.name === '傲慢之刃') {
+                var speedDiff = attacker.speed - defender.speed;
+                if (speedDiff > 0) {
+                    speedDiffBonus = 0.02;
+                    if ((attacker.ascensionLevel || 0) >= 4) speedDiffBonus = 0.03;
+                }
+            }
 
             // 属性抗性率
             var resistTable = SIN_RESIST[skill.sinType] || SIN_RESIST['暴食'];
@@ -13089,12 +14674,64 @@
                     if (b.dmgBonus) selfDmgBonus += b.dmgBonus;
                 });
             }
+            // 倾衡SR罪影：对有debuff的目标+20%
+            if (attacker.shadowEffect && attacker.shadowEffect.debuffBonus && defender.debuffs && defender.debuffs.length > 0) {
+                selfDmgBonus += attacker.shadowEffect.debuffBonus;
+            }
+            // 倾衡SSR罪影：破韧后下次攻击+25%
+            if (attacker._postBreakDmgBonus) {
+                selfDmgBonus += attacker._postBreakDmgBonus;
+                attacker._postBreakDmgBonus = 0;
+                addLog(attacker.name + '【终局裁决】破韧奖励伤害触发', 'buff');
+            }
 
             // 敌方易伤率（来自debuff）
             var enemyDmgTaken = defender.dmgTakenBonus || 0;
+            // 异常SSR罪影：debuff数量×8%（上限+40%）
+            if (attacker.shadowEffect && attacker.shadowEffect.debuffDmgPerStack) {
+                var debuffN = defender.debuffs ? defender.debuffs.length : 0;
+                enemyDmgTaken += Math.min(attacker.shadowEffect.debuffDmgCap || 0.4, debuffN * attacker.shadowEffect.debuffDmgPerStack);
+            }
 
             // 防御方免伤
             var defenderDR = defender.dmgReduction || 0;
+            // 吞食永夜入腹：免伤上限50%
+            if (defender.shadowEffect && defender.shadowEffect.dmgReductionCap) {
+                defenderDR = Math.min(defender.shadowEffect.dmgReductionCap, defenderDR);
+            }
+            
+            // 防御值（异常R罪影：无视20%防御）
+            var defValue = defender.def;
+            if (attacker.shadowEffect && attacker.shadowEffect.defPenetration) {
+                defValue = defValue * (1 - attacker.shadowEffect.defPenetration);
+            }
+            // 霜华升华6阶：攻击冰冻目标时无视50%防御
+            if (attacker.charId === 'char_001' && (attacker.ascensionLevel || 0) >= 6) {
+                var isFrozen = defender.debuffs && defender.debuffs.some(function(d){ return d.name === '冰冻'; });
+                if (isFrozen) {
+                    defValue = defValue * 0.5;
+                }
+            }
+            // 异常R罪影：30%概率使敌防御-10%（施加debuff）
+            if (attacker.shadowEffect && attacker.shadowEffect.defReduceChance && Math.random() < attacker.shadowEffect.defReduceChance) {
+                if (!defender.debuffs) defender.debuffs = [];
+                var alreadyReduced = defender.debuffs.find(function(d){ return d.name === '护甲溶解'; });
+                if (!alreadyReduced) {
+                    defender.debuffs.push({ name:'护甲溶解', icon:'⚗️', turns: attacker.shadowEffect.defReduceDuration || 2, defReduceAmount: attacker.shadowEffect.defReduceAmount || 0.1 });
+                    defender.def = Math.floor(defender.def * (1 - (attacker.shadowEffect.defReduceAmount || 0.1)));
+                    addLog(defender.name + '【护甲溶解】防御-' + Math.round((attacker.shadowEffect.defReduceAmount||0.1)*100) + '%', 'debuff');
+                }
+            }
+            // 倾衡R罪影：偷取速度
+            if (attacker.shadowEffect && attacker.shadowEffect.speedSteal && !attacker._speedStealDone) {
+                var stealAmt = attacker.shadowEffect.speedSteal;
+                defender.speed = Math.max(1, defender.speed - stealAmt);
+                attacker.speed = Math.min(attacker.speed + stealAmt, 99);
+                if (!defender.debuffs) defender.debuffs = [];
+                defender.debuffs.push({ name:'速度偷取', icon:'⚖️', turns: attacker.shadowEffect.speedStealDuration || 2, speedReduce: stealAmt });
+                attacker._speedStealDone = true;
+                addLog(attacker.name + '【此消彼长】偷取' + defender.name + '速度+' + stealAmt, 'buff');
+            }
 
             // 伤害 = 攻击力 × 基础倍率 × (1+自身增伤) × (1+敌方易伤) × (1-抗性) × (1+最终点数%) × (1-免伤) - 防御×0.25
             var dmg = attacker.atk * baseMultiplier
@@ -13103,14 +14740,48 @@
                 * (1 - resistRate)
                 * (1 + coinBonus)
                 * (1 - defenderDR)
-                - defender.def * 0.25;
+                - defValue * 0.25;
 
             // 暴击判定
             var critRate = attacker.critRate || 0.05;
             var critDmg = attacker.critDmg || 1.5;
+            // 不秋草 - 升格模块一 雨后春生：理智>25时暴击伤害+40%，=45时+80%并共享队友
+            if (attacker.charId === 'char_006' && attacker.ascension >= 1) {
+                var mods = getCharacterAscensionModules('char_006');
+                if (mods[0] && mods[0].id === 'asc_006_1') {
+                    var san = attacker.sanity || 0;
+                    var critBonus = 0;
+                    if (san === 45) critBonus = 0.80;
+                    else if (san > 25) critBonus = 0.40;
+                    if (critBonus > 0) {
+                        critDmg += critBonus;
+                        // =45时共享给所有队友
+                        if (san === 45) {
+                            battle.allies.forEach(function(ally) {
+                                if (ally.alive && ally.id !== attacker.id) {
+                                    ally.critDmg = (ally.critDmg || 1.5) + critBonus;
+                                    addLog(ally.name + ' 暴击伤害+' + Math.round(critBonus*100) + '%（雨后春生·共鸣）', 'buff');
+                                }
+                            });
+                            addLog(attacker.name + '【雨后春生】理智45：暴伤+80%并共享队友', 'buff');
+                        }
+                    }
+                }
+            }
+            // 迅刃SSR罪影：施加控制时额外暴伤 = speed × ctrlCritDmgPerSpeed（此处无法判断控制，在applyTalentAfterDamage中再加成）
             var isCrit = Math.random() < critRate;
             if (isCrit) {
                 dmg *= critDmg;
+            }
+            // 迅斩：每枚硬币正面额外造成攻击力X%的伤害（基础10%，升华2阶15%）
+            if (attacker.charId === 'char_102' && skill.name === '迅斩' && heads > 0) {
+                var xunzhanExtraDmg = Math.floor(attacker.atk * xunzhanBonusPerHead * heads);
+                dmg += xunzhanExtraDmg;
+            }
+            // 傲慢之刃：速度差额外伤害（基础2%，升华4阶3%）
+            if (attacker.charId === 'char_102' && skill.name === '傲慢之刃' && speedDiffBonus > 0) {
+                var speedDmg = Math.floor(attacker.atk * speedDiffBonus * (attacker.speed - defender.speed));
+                dmg += speedDmg;
             }
 
             dmg = Math.max(1, Math.floor(dmg));
@@ -13122,6 +14793,25 @@
             if (unit.charId && typeof applyTalentOnDamageTaken === 'function') {
                 dmg = applyTalentOnDamageTaken(unit, attacker, dmg) || dmg;
             }
+            // 坚盾SSR罪影"吞食永夜入腹"：受伤时获得等量免伤（最高25%，持续2回合）
+            if (unit.shadowEffect && unit.shadowEffect.damageToReduction && unit.isAlly) {
+                var newDR = Math.min(unit.shadowEffect.reductionCap || 0.25, dmg / Math.max(1, unit.maxHp));
+                if (newDR > 0) {
+                    unit.dmgReduction = Math.min(unit.shadowEffect.dmgReductionCap || 0.5, (unit.dmgReduction || 0) + newDR);
+                    if (!unit.buffs) unit.buffs = [];
+                    unit.buffs.push({ name:'暗夜吞咽', icon:'🌑', turns: unit.shadowEffect.reductionDuration || 2, type:'dmgReduction', dmgReduction: newDR });
+                }
+            }
+            // 坚盾R罪影"铜墙铁壁"：受击时20%概率使攻击者下回合速度-2
+            if (unit.shadowEffect && unit.shadowEffect.counterSlowChance && unit.isAlly && attacker && attacker.alive) {
+                if (Math.random() < unit.shadowEffect.counterSlowChance) {
+                    var slowAmt = unit.shadowEffect.counterSlowAmount || 2;
+                    attacker.speed = Math.max(1, attacker.speed - slowAmt);
+                    if (!attacker.debuffs) attacker.debuffs = [];
+                    attacker.debuffs.push({ name:'速度降低', icon:'🛡', turns:1, speedReduce: slowAmt });
+                    addLog(unit.name + '【铜墙铁壁】反击，' + attacker.name + '速度-' + slowAmt, 'buff');
+                }
+            }
             // 护盾优先吸收伤害
             if (unit.shield > 0) {
                 if (unit.shield >= dmg) {
@@ -13130,14 +14820,76 @@
                 } else {
                     dmg -= unit.shield;
                     unit.shield = 0;
-                    // 护盾破碎，移除shield buff
+                    // 护盾破碎，移除shield buff，并撤销圣音护盾防御加成
                     if (unit.buffs) {
+                        unit.buffs.filter(function(b) { return b.type === 'shield' && b.defBonus; }).forEach(function(b) {
+                            if (unit._shieldDefBonus && unit._shieldDefBonus > 0) {
+                                unit.def = Math.max(1, Math.floor(unit.def / (1 + b.defBonus)));
+                                unit._shieldDefBonus = Math.max(0, unit._shieldDefBonus - b.defBonus);
+                            }
+                        });
                         unit.buffs = unit.buffs.filter(function(b) { return b.type !== 'shield'; });
                     }
                 }
             }
             if (dmg <= 0) return;
+            // 圣歌升华6阶：友方受到致命伤害时50%概率保留1点HP（限2次）
+            if (unit.isAlly && unit.hp <= dmg && unit.hp > 0) {
+                // 检查队伍中是否有圣歌且升华≥6
+                for (var hi = 0; hi < battle.allies.length; hi++) {
+                    var hymner = battle.allies[hi];
+                    if (hymner.alive && hymner.charId === 'char_004' && (hymner.ascensionLevel || 0) >= 6) {
+                        if ((hymner._fatalSaveCount || 0) < 2 && Math.random() < 0.50) {
+                            hymner._fatalSaveCount = (hymner._fatalSaveCount || 0) + 1;
+                            unit.hp = 1;
+                            addLog(unit.name + ' 受到致命伤害，' + hymner.name + '【升华6阶】使其保留1点HP！（' + hymner._fatalSaveCount + '/2）', 'buff');
+                            return;
+                        }
+                        break;
+                    }
+                }
+                // 圣歌天赋基础：20%/升华1阶30%，每场战斗限1次
+                for (var hi2 = 0; hi2 < battle.allies.length; hi2++) {
+                    var hymner2 = battle.allies[hi2];
+                    if (hymner2.alive && hymner2.charId === 'char_004') {
+                        if (!hymner2._talentShieldUsed) {
+                            var triggerChance = (hymner2.ascensionLevel || 0) >= 1 ? 0.30 : 0.20;
+                            if (Math.random() < triggerChance) {
+                                hymner2._talentShieldUsed = true;
+                                var shieldAmt = Math.floor(hymner2.atk * 0.5);
+                                unit.shield = (unit.shield || 0) + shieldAmt;
+                                if (!unit.buffs) unit.buffs = [];
+                                unit.buffs.push({ name:'慈悲护盾', icon:'💛', turns:1, type:'shield', shieldVal:shieldAmt });
+                                addLog(hymner2.name + '【慈悲颂歌】触发！为' + unit.name + '提供 ' + shieldAmt + ' 护盾', 'buff');
+                                // 护盾可能抵挡伤害
+                                if (unit.shield >= dmg) { unit.shield -= dmg; return; }
+                                else { dmg -= unit.shield; unit.shield = 0; unit.buffs = unit.buffs.filter(function(b){return b.type !== 'shield';}); }
+                            }
+                        }
+                        break;
+                    }
+                }
+            }
+            // 坚盾SR罪影"身后已空无一物"：HP低于30%时获得20%最大HP护盾（限1次）
+            if (unit.isAlly && unit.shadowEffect && unit.shadowEffect.emergencyShield && !unit._emergencyShieldUsed) {
+                if (unit.hp - dmg > 0 && (unit.hp - dmg) / unit.maxHp < (unit.shadowEffect.emergencyThreshold || 0.3)) {
+                    unit._emergencyShieldUsed = true;
+                    var eShield = Math.floor(unit.maxHp * (unit.shadowEffect.shieldPercent || 0.2));
+                    unit.shield = (unit.shield || 0) + eShield;
+                    if (!unit.buffs) unit.buffs = [];
+                    unit.buffs.push({ name:'不屈护盾', icon:'🛡', turns:2, type:'shield', shieldVal:eShield });
+                    addLog(unit.name + '【不屈意志】触发！获得 ' + eShield + ' 护盾', 'buff');
+                }
+            }
             var wasAlive = unit.hp > 0;
+            // 诺亚升格模块二 怒火焚天：受到伤害时记录失血百分比
+            if (unit.charId === 'char_007' && unit.isAlly && unit.ascension >= 2) {
+                var noahMods = getCharacterAscensionModules('char_007');
+                if (noahMods[1] && noahMods[1].id === 'asc_007_2') {
+                    var lossPct = dmg / Math.max(1, unit.maxHp);
+                    unit._hpLossPercent = Math.min(1.0, Math.max(unit._hpLossPercent || 0, lossPct));
+                }
+            }
             unit.hp = Math.max(0, unit.hp - dmg);
             if (unit.hp <= 0) {
                 unit.alive = false;
@@ -13145,6 +14897,11 @@
                 if (wasAlive && attacker && attacker.isAlly) {
                     applyAscensionModuleOnKill(attacker, unit);
                 }
+            }
+
+            // 诺亚天赋：受到敌人攻击时获得怒火
+            if (unit.charId === 'char_007' && unit.isAlly && attacker && !attacker.isAlly) {
+                addAngerStack(unit, attacker);
             }
         }
         function addLog(text, type) { battle.log.push({text:text, type:type||''}); if (battle.log.length > 50) battle.log.shift(); }
@@ -13197,6 +14954,191 @@
                 return true;
             }
             return false;
+        }
+
+        // 双击单位：查看该单位当前牌库（含手牌）
+        function showUnitDeck(unit) {
+            var overlay = document.createElement('div');
+            overlay.className = 'unit-info-overlay';
+            var isEnemy = !unit.charId || battle.enemies.indexOf(unit) >= 0;
+            // 收集所有牌：手牌 + 牌库（不含autoUse特殊牌单独分组）
+            var handCards = (unit.handCards || []);
+            var deckCards = (unit.deck || []);
+            var cards = [];
+            handCards.forEach(function(c) { cards.push({ skill: c.skill, source: 'hand', autoUse: c.autoUse }); });
+            deckCards.forEach(function(c) { cards.push({ skill: c.skill, source: c.autoUse ? 'special' : 'deck', autoUse: c.autoUse }); });
+            var listHtml = '';
+            if (isEnemy) {
+                // 敌人不显示牌库，只显示技能列表
+                var skills = unit.skills || [];
+                if (skills.length === 0) {
+                    listHtml = '<div class="unit-info-empty">暂无技能信息</div>';
+                } else {
+                    listHtml = '<div class="deck-card-list">';
+                    skills.forEach(function(sk) {
+                        var typeClass = sk.type === 'attack' ? 'type-attack' : 'type-support';
+                        var meta = sk.type === 'attack' ? ('基础' + sk.basePower + ' 硬币+' + sk.coinPower + ' ×' + sk.coinCount) : '支援';
+                        listHtml += '<div class="deck-card-item ' + typeClass + '">' +
+                            '<div><div class="deck-card-name">' + sk.name + '</div>' +
+                            '<div class="deck-card-meta">' + meta + ' · ' + (sk.sinType||'') + '</div></div>' +
+                            '<span class="deck-card-tag deck">' + (sk.type === 'attack' ? '攻击' : '支援') + '</span>' +
+                        '</div>';
+                    });
+                    listHtml += '</div>';
+                }
+            } else {
+                if (cards.length === 0) {
+                    listHtml = '<div class="unit-info-empty">牌库已空</div>';
+                } else {
+                    listHtml = '<div class="deck-card-list">';
+                    cards.forEach(function(c) {
+                        var sk = c.skill || c;
+                        if (!sk || !sk.name) return;
+                        var typeClass = c.source === 'special' ? 'type-special' : (sk.type === 'attack' ? 'type-attack' : 'type-support');
+                        var meta = sk.type === 'attack' ? ('基础' + sk.basePower + ' 硬币+' + sk.coinPower + ' ×' + sk.coinCount) : (c.source === 'special' ? '特殊' : '支援');
+                        var tagLabel = c.source === 'hand' ? '手牌' : (c.source === 'special' ? '特殊' : '牌库');
+                        listHtml += '<div class="deck-card-item ' + typeClass + '">' +
+                            '<div><div class="deck-card-name">' + sk.name + '</div>' +
+                            '<div class="deck-card-meta">' + meta + '</div></div>' +
+                            '<span class="deck-card-tag ' + c.source + '">' + tagLabel + '</span>' +
+                        '</div>';
+                    });
+                    listHtml += '</div>';
+                }
+            }
+            overlay.innerHTML = '<div class="unit-info-modal">' +
+                '<div class="unit-info-title">' +
+                    '<span>' + (isEnemy ? '⚔️' : '🃏') + '</span>' +
+                    '<span>' + unit.name + ' · ' + (isEnemy ? '技能列表' : '当前牌库') + '</span>' +
+                '</div>' +
+                listHtml +
+                '<button class="unit-info-close">关闭</button>' +
+            '</div>';
+            document.body.appendChild(overlay);
+            overlay.querySelector('.unit-info-close').onclick = function() { overlay.remove(); };
+            overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+        }
+
+        // 长按单位：查看该单位的 buff/debuff 详情
+        function showUnitBuffs(unit) {
+            var overlay = document.createElement('div');
+            overlay.className = 'unit-info-overlay';
+            var buffs = (unit.buffs || []).map(function(b) {
+                return { name: b.name, icon: b.icon || '↑', turns: b.turns, positive: true, raw: b };
+            });
+            var debuffs = (unit.debuffs || []).map(function(d) {
+                return { name: d.name, icon: d.icon || '↓', turns: d.turns, positive: false, raw: d };
+            });
+            var all = buffs.concat(debuffs);
+            // 额外状态：护盾、充能、闪避、免伤
+            var extras = [];
+            if (unit.shield > 0) extras.push({ name: '护盾', icon: '🛡', value: Math.floor(unit.shield) + ' 点', positive: true });
+            if (unit.charge !== undefined && unit.charId === 'char_005') extras.push({ name: '充能', icon: '⚡', value: unit.charge + '/' + (unit.maxCharge||6), positive: true });
+            if (unit.evasion > 0) extras.push({ name: '闪避率', icon: '👻', value: Math.round(unit.evasion * 100) + '%', positive: true });
+            if (unit.dmgReduction > 0) extras.push({ name: '免伤', icon: '🔒', value: Math.round(unit.dmgReduction * 100) + '%', positive: true });
+            if ((unit.luoZhuStacks||0) > 0) extras.push({ name: '落竹', icon: '🎋', value: (unit.luoZhuStacks||0) + '/' + ((unit.ascensionLevel||0) >= 2 ? 10 : 7) + ' 层', positive: true });
+            var listHtml = '';
+            if (all.length === 0 && extras.length === 0) {
+                listHtml = '<div class="unit-info-empty">当前无任何状态效果</div>';
+            } else {
+                listHtml = '<div class="buff-detail-list">';
+                all.forEach(function(ef) {
+                    // 解析数值描述
+                    var valueDesc = '';
+                    var r = ef.raw;
+                    if (r.type === 'dmgReduction' && r.dmgReduction) valueDesc = '免伤 +' + Math.round(r.dmgReduction*100) + '%';
+                    else if (r.type === 'evasion' && r.evasion) valueDesc = '闪避 +' + Math.round(r.evasion*100) + '%';
+                    else if (r.type === 'speed' && r.speedBoost) valueDesc = '速度 +' + Math.round(r.speedBoost*100) + '%';
+                    else if (r.type === 'shield' && r.shieldVal) valueDesc = '护盾 ' + r.shieldVal;
+                    else if (r.type === 'regen' && r.regenPercent) valueDesc = '每回合回复 ' + Math.round(r.regenPercent*100) + '% HP';
+                    else if (r.type === 'defDown' && r.value) valueDesc = '防御 -' + Math.round(r.value*100) + '%';
+                    else if (r.type === 'burnDot' && r.dot) valueDesc = '灼烧每回合 ' + r.dot + ' 伤害';
+                    else if (r.type === 'atkBoost' && r.value) valueDesc = '攻击 +' + Math.round(r.value*100) + '%';
+                    listHtml += '<div class="buff-detail-item ' + (ef.positive?'positive':'negative') + '">' +
+                        '<div class="buff-detail-icon">' + ef.icon + '</div>' +
+                        '<div class="buff-detail-body">' +
+                            '<div class="buff-detail-name">' + ef.name + '</div>' +
+                            (valueDesc ? '<div class="buff-detail-value">' + valueDesc + '</div>' : '') +
+                            '<div class="buff-detail-turns">剩余 ' + ef.turns + ' 回合</div>' +
+                        '</div>' +
+                    '</div>';
+                });
+                extras.forEach(function(ef) {
+                    listHtml += '<div class="buff-detail-item positive">' +
+                        '<div class="buff-detail-icon">' + ef.icon + '</div>' +
+                        '<div class="buff-detail-body">' +
+                            '<div class="buff-detail-name">' + ef.name + '</div>' +
+                            '<div class="buff-detail-value">' + ef.value + '</div>' +
+                        '</div>' +
+                    '</div>';
+                });
+                listHtml += '</div>';
+            }
+            overlay.innerHTML = '<div class="unit-info-modal">' +
+                '<div class="unit-info-title">' +
+                    '<span>✨</span><span>' + unit.name + ' · 状态详情</span>' +
+                '</div>' +
+                listHtml +
+                '<button class="unit-info-close">关闭</button>' +
+            '</div>';
+            document.body.appendChild(overlay);
+            overlay.querySelector('.unit-info-close').onclick = function() { overlay.remove(); };
+            overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
+        }
+
+        // 长按角色显示属性面板（攻击/防御/速度/暴击率/暴击伤害）
+        function showCharacterStats(unit) {
+            var overlay = document.createElement('div');
+            overlay.className = 'unit-info-overlay';
+            var atkVal = Math.floor(unit.atk);
+            var defVal = Math.floor(unit.def);
+            var spdVal = Math.floor(unit.speed);
+            var critRateVal = Math.round((unit.critRate || 0) * 100);
+            var critDmgVal = Math.round((unit.critDmg || 1.5) * 100);
+            var luoZhuVal = unit.luoZhuStacks || 0;
+            var luoZhuMax = (unit.ascensionLevel || 0) >= 2 ? 10 : 7;
+            var speedBonus = spdVal - (unit.baseSpeed || spdVal);
+            var speedBonusHtml = speedBonus > 0 ? '<span style="color:#7ee787;"> (+' + speedBonus + ')</span>' : '';
+            
+            var listHtml = '<div class="buff-detail-list">' +
+                '<div class="buff-detail-item positive">' +
+                    '<div class="buff-detail-icon">⚔️</div>' +
+                    '<div class="buff-detail-body"><div class="buff-detail-name">攻击力</div><div class="buff-detail-value">' + atkVal + '</div></div>' +
+                '</div>' +
+                '<div class="buff-detail-item positive">' +
+                    '<div class="buff-detail-icon">🛡</div>' +
+                    '<div class="buff-detail-body"><div class="buff-detail-name">防御力</div><div class="buff-detail-value">' + defVal + '</div></div>' +
+                '</div>' +
+                '<div class="buff-detail-item positive">' +
+                    '<div class="buff-detail-icon">💨</div>' +
+                    '<div class="buff-detail-body"><div class="buff-detail-name">速度</div><div class="buff-detail-value">' + spdVal + speedBonusHtml + '</div></div>' +
+                '</div>' +
+                '<div class="buff-detail-item positive">' +
+                    '<div class="buff-detail-icon">🎯</div>' +
+                    '<div class="buff-detail-body"><div class="buff-detail-name">暴击率</div><div class="buff-detail-value">' + critRateVal + '%</div></div>' +
+                '</div>' +
+                '<div class="buff-detail-item positive">' +
+                    '<div class="buff-detail-icon">💥</div>' +
+                    '<div class="buff-detail-body"><div class="buff-detail-name">暴击伤害</div><div class="buff-detail-value">' + critDmgVal + '%</div></div>' +
+                '</div>';
+            if (unit.charId === 'char_006') {
+                listHtml += '<div class="buff-detail-item positive">' +
+                    '<div class="buff-detail-icon">🎋</div>' +
+                    '<div class="buff-detail-body"><div class="buff-detail-name">落竹</div><div class="buff-detail-value">' + luoZhuVal + '/' + luoZhuMax + ' 层</div></div>' +
+                '</div>';
+            }
+            listHtml += '</div>';
+            
+            overlay.innerHTML = '<div class="unit-info-modal">' +
+                '<div class="unit-info-title">' +
+                    '<span>📊</span><span>' + unit.name + ' · 战斗属性</span>' +
+                '</div>' +
+                listHtml +
+                '<button class="unit-info-close">关闭</button>' +
+            '</div>';
+            document.body.appendChild(overlay);
+            overlay.querySelector('.unit-info-close').onclick = function() { overlay.remove(); };
+            overlay.onclick = function(e) { if (e.target === overlay) overlay.remove(); };
         }
 
         // 显示技能详情弹窗（战斗界面用）
@@ -13484,6 +15426,7 @@
                 updateMainScreen();
                 showScreen('main-screen');
                 startAutoSave();
+                startStaminaTimer();  // 启动体力计时器
                 updateEventBadge();
             }
         });
